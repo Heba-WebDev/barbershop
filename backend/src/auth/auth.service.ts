@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common'
 
 import * as jwt from 'jsonwebtoken'
 import { hash, compare } from 'bcrypt'
@@ -7,6 +7,7 @@ import { type CreateUserDto } from './dto/create-user.dto'
 import { type LoginUserDto } from './dto/login-user.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type User, type IJwtPayload } from './interfaces'
+import { type UUID } from 'crypto'
 
 @Injectable()
 export class AuthService {
@@ -80,6 +81,16 @@ export class AuthService {
     return {
       user,
       token
+    }
+  }
+
+  async findUserByUUID (id: UUID) {
+    try {
+      return await this.prismaService.user.findUnique({
+        where: { id }
+      })
+    } catch (error) {
+      throw new InternalServerErrorException('Error in Find by User UUID')
     }
   }
 }
