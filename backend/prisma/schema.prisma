@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  EMPLOYEE
+  OWNER
+}
+
+enum AppointmentState {
+  PENDING
+  FINISHED
+  CANCELED
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model User {
+  id                    String            @id @default(uuid())
+  name                  String
+  email                 String            @unique
+  password              String
+  phone_number          String?
+  is_active             Boolean           @default(false)
+  is_verified           Boolean           @default(false)
+  avatar                String?
+  role                  Role
+  created_at            DateTime          @default(now())
+  updated_at            DateTime          @updatedAt
+  Company               Company[]
+  EmployeeService       EmployeeService[]
+  EmployeeCompany       EmployeeCompany[]
+  AppointmentAsEmployee Appointment[]     @relation("Employee")
+  AppointmentAsUser     Appointment[]     @relation("User")
+}
+
+model Company {
+  id           String  @id @default(uuid())
+  name         String
+  phone_number String?
+  address      String
+  is_active    Boolean @default(true)
+  avatar       String?
+  user_id      String
+
+  user            User              @relation(fields: [user_id], references: [id])
+  Schedule        Schedule[]
+  Service         Service[]
+  EmployeeCompany EmployeeCompany[]
+}
+
+model Schedule {
+  id         Int      @id @default(autoincrement())
+  day        Day
+  start_date DateTime
+  end_date   DateTime
+  company_id String
+
+  company Company @relation(fields: [company_id], references: [id])
+}
+
+model Service {
+  id         String  @id @default(uuid())
+  name       String
+  is_active  Boolean @default(true)
+  price      Float
+  avatar     String?
+  company_id String
+
+  company            Company              @relation(fields: [company_id], references: [id])
+  EmployeeService    EmployeeService[]
+  ServiceAppointment ServiceAppointment[]
+}
+
+model EmployeeService {
+  id         String @id @default(uuid())
+  user_id    String
+  service_id String
+
+  user    User    @relation(fields: [user_id], references: [id])
+  service Service @relation(fields: [service_id], references: [id])
+}
+
+model EmployeeCompany {
+  id         String  @id @default(uuid())
+  is_active  Boolean @default(true)
+  user_id    String
+  company_id String
+
+  user    User    @relation(fields: [user_id], references: [id])
+  company Company @relation(fields: [company_id], references: [id])
+}
+
+model Appointment {
+  id          String           @id @default(uuid())
+  start_date  DateTime
+  state       AppointmentState
+  total       Float
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+  employee_id String
+  user_id     String
+
+  employee           User                 @relation("Employee", fields: [employee_id], references: [id])
+  user               User                 @relation("User", fields: [user_id], references: [id])
+  ServiceAppointment ServiceAppointment[]
+}
+
+model ServiceAppointment {
+  id             String @id @default(uuid())
+  appointment_id String
+  service_id     String
+
+  appointment Appointment @relation(fields: [appointment_id], references: [id])
+  service     Service     @relation(fields: [service_id], references: [id])
+}

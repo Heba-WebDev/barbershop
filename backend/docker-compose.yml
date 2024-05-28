@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  barber-shop-db:
+    image: postgres:15.3
+    container_name: barber-shop-db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
