@@ -50,7 +50,7 @@ export class AppointmentService {
       service_id: service
     }))
 
-    return this.prisma.serviceAppointment.createMany({
+    return await this.prisma.serviceAppointment.createMany({
       data: serviceFormated
     })
   }
@@ -58,7 +58,7 @@ export class AppointmentService {
   //! move to module services
   async findServiceUUID (id: UUID) {
     try {
-      return this.prisma.service.findUnique({
+      return await this.prisma.service.findUnique({
         where: { id }
       })
     } catch (error) {
@@ -69,7 +69,7 @@ export class AppointmentService {
   //! move to module Employee
   async findEmployeeByUUID (id: UUID) {
     try {
-      return this.prisma.employeeCompany.findUnique({
+      return await this.prisma.employeeCompany.findUnique({
         where: { id }
       })
     } catch (error) {
