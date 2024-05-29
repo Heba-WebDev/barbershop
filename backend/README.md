@@ -95,8 +95,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu nunc mauris. Na
   <img src='https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png' alt='Image not found' />
 </p>
 
-# Steps
+# Develop
 - Copy .env.template and rename to .env
 - Fill environment variables in .env 
 - Generate migrate `npx prisma migrate <name>`
 - Up database `docker compose up -d`
+- Run `npm run start:dev`
+
+# API Documentacion (swagger)
+- Run `npm run start:dev`
+- To access api documentation `http://localhost:3000/api`
