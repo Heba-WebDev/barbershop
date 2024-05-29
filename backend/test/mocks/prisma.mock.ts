@@ -8,5 +8,17 @@ export const mockPrisma = {
       role: 'CLIENT'
     })),
     findUnique: jest.fn()
+  },
+  appointment: {
+    create: jest.fn()
+  },
+  employeeCompany: {
+    findUnique: jest.fn()
+  },
+  serviceAppointment: {
+    createMany: jest.fn()
+  },
+  service: {
+    findUnique: jest.fn()
   }
 } as const

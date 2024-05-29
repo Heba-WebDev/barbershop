@@ -1,6 +1,9 @@
+<<<<<<< HEAD
+=======
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMmFmYzc2LTg1ZjAtNDRjYi1iZGJlLTY0NTJkYTMwZGUzZiIsImlhdCI6MTcxNjg2MjU4NywiZXhwIjoxNzE2ODY2MTg3fQ.3iHjx-iJgot7eW71UGYG8Ql1F9hN-rzXWCtT9AVL_Hc
 
 ###
+>>>>>>> devop
 POST http://localhost:3000/api/auth/new-account
 Content-Type: application/json
 
@@ -9,6 +12,9 @@ Content-Type: application/json
   "email": "test@gmail.com",
   "password": "qqqqqq7T",
   "phoneNumber": "+569 87264971"  
+<<<<<<< HEAD
+}
+=======
 }
 ###
 
@@ -24,3 +30,4 @@ Content-Type: application/json
 GET http://localhost:3000/api/auth/renew
 Authorization: Bearer {{token}}
 
+>>>>>>> devop
