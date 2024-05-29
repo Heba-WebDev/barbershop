@@ -1,4 +1,8 @@
-import { ConflictException, Controller, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Controller,
+  NotFoundException,
+} from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { Test, type TestingModule } from "@nestjs/testing";
 import { validate } from "class-validator";
@@ -26,10 +30,7 @@ describe("AuthService", () => {
         AuthService,
         {
           provide: PrismaService,
-          useValue: {
-            mockPrisma,
-            update: jest.fn(),
-          },
+          useValue: mockPrisma,
         },
       ],
       imports: [PassportModule.register({ defaultStrategy: "jwt" })],
@@ -113,8 +114,8 @@ describe("AuthService", () => {
         avatar: "https://algo.com/algo.png",
       };
       jest
-       .spyOn(authService, "update")
-       .mockRejectedValue(new NotFoundException("User doesn't exist")); // Use NotFoundException directly
+        .spyOn(authService, "update")
+        .mockRejectedValue(new NotFoundException("User doesn't exist")); // Use NotFoundException directly
       await expect(authService.update(mockId, mockUser)).rejects.toThrow(
         NotFoundException
       );
