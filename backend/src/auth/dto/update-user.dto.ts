@@ -1,23 +1,50 @@
+import { ApiProperty } from '@nestjs/swagger'
 import {
   IsEmail,
   IsOptional,
   IsString,
-  MinLength,
-} from "class-validator";
+  MaxLength,
+  MinLength
+} from 'class-validator'
 
 export class UpdateUserDto {
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'User - name',
+    nullable: true,
+    minLength: 1
+  })
   @IsString()
   @MinLength(1)
-  readonly name: string;
+  @IsOptional()
+  readonly name?: string
 
+  @ApiProperty({
+    example: 'test@gmail.com',
+    description: 'User - email',
+    nullable: true
+  })
   @IsEmail()
-  readonly email: string;
+  @IsOptional()
+  readonly email?: string
 
+  @ApiProperty({
+    example: '+569 22334422',
+    description: 'User - phoneNumber must be maximum 15 characters',
+    nullable: true,
+    maxLength: 15
+  })
   @IsString()
-  @MinLength(9)
-  readonly phone_number: string;
+  @MaxLength(15)
+  @IsOptional()
+  readonly phone_number?: string
 
+  @ApiProperty({
+    example: 'https://image.png.com',
+    description: 'User - avatar',
+    nullable: true
+  })
   @IsString()
   @IsOptional()
-  readonly avatar?: string;
+  readonly avatar?: string
 }
