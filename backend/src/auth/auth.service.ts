@@ -116,4 +116,14 @@ export class AuthService {
       token,
     };
   }
+
+   async findUserByUUID (id: UUID) {
+    try {
+      return await this.prismaService.user.findUnique({
+        where: { id }
+      })
+    } catch (error) {
+      throw new InternalServerErrorException('Error in Find by User UUID')
+    }
+  }
 }
