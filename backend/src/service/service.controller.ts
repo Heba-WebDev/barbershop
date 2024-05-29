@@ -7,7 +7,7 @@ export class ServiceController {
   constructor (private readonly serviceService: ServiceService) {}
 
   @Post()
-  create (@Body() createServiceDto: CreateServiceDto) {
-    return this.serviceService.create(createServiceDto)
+  async create (@Body() createServiceDto: CreateServiceDto) {
+    return await this.serviceService.create(createServiceDto)
   }
 }
