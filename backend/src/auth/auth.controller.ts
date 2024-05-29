@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+import { Body, Controller, Post } from '@nestjs/common'
+
+import { AuthService } from './auth.service'
+import { CreateUserDto } from './dto/create-user.dto'
+import { LoginUserDto } from './dto/login-user.dto'
+=======
 import { Body, Controller, Get, Post } from '@nestjs/common'
 
 import { Auth, GetUser } from './decorators'
@@ -5,6 +12,7 @@ import { AuthService } from './auth.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { LoginUserDto } from './dto/login-user.dto'
 import { User } from './interfaces'
+>>>>>>> devop
 
 @Controller('auth')
 export class AuthController {
@@ -19,10 +27,13 @@ export class AuthController {
   async login (@Body() loginAuthDto: LoginUserDto) {
     return await this.authService.login(loginAuthDto)
   }
+<<<<<<< HEAD
+=======
 
   @Get('renew')
   @Auth()
   async renewToken (@GetUser() user: User) {
     return await this.authService.renewToken(user)
   }
+>>>>>>> devop
 }

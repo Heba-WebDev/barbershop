@@ -54,11 +54,19 @@ npm  run  dev
 
 4. Haz un commit de tus cambios con un mensaje descriptivo: `git commit -m "your commit message"`.
 
+<<<<<<< HEAD
+5. Para asegurarte de que no haya conflictos, ejecuta `git pull origin devop`.
+
+6. Sube los cambios a tu nueva rama, ejecuta `git push -u origin feat/Sign-up`.
+
+7. Crea un pull request hacia la rama `devop`.
+=======
 5. Para asegurarte de que no haya conflictos, ejecuta `git pull origin main`.
 
 6. Sube los cambios a tu nueva rama, ejecuta `git push -u origin feat/Sign-up`.
 
 7. Crea un pull request hacia la rama `main`.
+>>>>>>> devop
 
 8. Asegúrate de describir bien el pull request.
 

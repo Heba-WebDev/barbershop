@@ -96,7 +96,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu nunc mauris. Na
 </p>
 
 # Steps
+<<<<<<< HEAD
+=======
 - Copy .env.template and rename to .env
 - Fill environment variables in .env 
+>>>>>>> devop
 - Generate migrate `npx prisma migrate <name>`
 - Up database `docker compose up -d`
