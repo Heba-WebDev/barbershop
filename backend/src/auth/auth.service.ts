@@ -1,21 +1,12 @@
 import { ConflictException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-<<<<<<< HEAD
-import * as jwt from 'jsonwebtoken'
-import { type JwtPayload } from 'jsonwebtoken'
-=======
 
 import * as jwt from 'jsonwebtoken'
->>>>>>> devop
 import { hash, compare } from 'bcrypt'
 
 import { type CreateUserDto } from './dto/create-user.dto'
 import { type LoginUserDto } from './dto/login-user.dto'
-<<<<<<< HEAD
-import { PrismaService } from 'src/prisma/prisma.service'
-=======
 import { PrismaService } from '../prisma/prisma.service'
 import { type User, type IJwtPayload } from './interfaces'
->>>>>>> devop
 
 @Injectable()
 export class AuthService {
@@ -40,11 +31,7 @@ export class AuthService {
       }
     })
 
-<<<<<<< HEAD
-    return { id, name, email, phoneNumber, role }
-=======
     return { user: { id, name, email, phoneNumber, role } }
->>>>>>> devop
   }
 
   async findUserByEmail (email: string) {
@@ -66,11 +53,7 @@ export class AuthService {
     const token = await this.generateJwt({ id: user.id })
 
     return {
-<<<<<<< HEAD
-      data: {
-=======
       user: {
->>>>>>> devop
         id: user.id,
         name: user.name,
         email: user.email,
@@ -84,18 +67,12 @@ export class AuthService {
     }
   }
 
-<<<<<<< HEAD
-  async generateJwt (payload: JwtPayload) {
-=======
   async generateJwt (payload: IJwtPayload) {
->>>>>>> devop
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
       expiresIn: process.env.JWT_REFRESH_EXPIRATION
     })
     return token
   }
-<<<<<<< HEAD
-=======
 
   async renewToken (user: User) {
     const token = await this.generateJwt({ id: user.id })
@@ -105,5 +82,4 @@ export class AuthService {
       token
     }
   }
->>>>>>> devop
 }

@@ -50,8 +50,7 @@ model User {
   Company               Company[]
   EmployeeService       EmployeeService[]
   EmployeeCompany       EmployeeCompany[]
-  AppointmentAsEmployee Appointment[]     @relation("Employee")
-  AppointmentAsUser     Appointment[]     @relation("User")
+  Appointment           Appointment[]
 }
 
 model Company {
@@ -109,20 +108,22 @@ model EmployeeCompany {
 
   user    User    @relation(fields: [user_id], references: [id])
   company Company @relation(fields: [company_id], references: [id])
+  appointment Appointment[]
 }
 
 model Appointment {
-  id          String           @id @default(uuid())
-  start_date  DateTime
-  state       AppointmentState
+  id          String            @id @default(uuid())
+  start_date  DateTime          @db.Date
+  start_time  DateTime          @db.Time
+  state       AppointmentState  @default(PENDING)
   total       Float
-  created_at  DateTime         @default(now())
-  updated_at  DateTime         @updatedAt
+  created_at  DateTime?         @default(now())
+  updated_at  DateTime?         @updatedAt
   employee_id String
   user_id     String
 
-  employee           User                 @relation("Employee", fields: [employee_id], references: [id])
-  user               User                 @relation("User", fields: [user_id], references: [id])
+  employee    EmployeeCompany   @relation(fields: [employee_id], references: [id])
+  user        User              @relation(fields: [user_id], references: [id])
   ServiceAppointment ServiceAppointment[]
 }
 
