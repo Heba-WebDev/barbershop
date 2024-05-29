@@ -6,7 +6,7 @@ export class CreateServiceDto {
     name: string
 
   @IsNumber()
-    value: number
+    price: number
 
   @IsUUID()
     user_id: UUID
