@@ -3,7 +3,7 @@ import { PassportModule } from '@nestjs/passport'
 import { Test, type TestingModule } from '@nestjs/testing'
 import { validate } from 'class-validator'
 
-import { hash } from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
 
 import { type User } from './interfaces'
 import { PrismaService } from '../prisma/prisma.service'
@@ -23,6 +23,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
+        JwtService,
         AuthService,
         {
           provide: PrismaService,
@@ -79,6 +80,22 @@ describe('AuthService', () => {
 
       expect(user).toEqual(newMockUser)
       expect(typeof token).toBe('string')
+    })
+  })
+
+  describe('forgot password', () => {
+    const mockForgotPassDto = {
+      email: mockUser.email
+    }
+    it('should return an error if no user was found with the same email', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null)
+      await expect(authService.forgotPassword(mockForgotPassDto)).rejects.toThrow(new ConflictException('User not found'))
+    })
+
+    it('should return 200 if the user\'s email is found', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(mockUser)
+      const result = await authService.forgotPassword(mockForgotPassDto)
+      expect(result).toEqual('Email succssfully sent')
     })
   })
 })
