@@ -13,11 +13,7 @@
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
-<<<<<<< HEAD
-    "noImplicitAny": false,
-=======
     "noImplicitAny": true,
->>>>>>> devop
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false

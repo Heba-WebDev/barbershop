@@ -1,9 +1,10 @@
 # compiled output
 /dist
 /node_modules
-.env
 /postgres
+pnpm-lock.yaml
 
+.env
 # Logs
 logs
 *.log
