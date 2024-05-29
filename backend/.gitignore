@@ -3,7 +3,7 @@
 /node_modules
 /postgres
 pnpm-lock.yaml
-.env
+/.env
 
 # Logs
 logs
