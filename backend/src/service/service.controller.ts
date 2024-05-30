@@ -2,7 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common'
 import { ServiceService } from './service.service'
 import { CreateServiceDto } from './dto/create-service.dto'
 import { ApiTags } from '@nestjs/swagger'
-import { Auth } from 'src/auth/decorators'
+import { Auth } from '../auth/decorators'
 
 @ApiTags('Service')
 @Controller('service')
