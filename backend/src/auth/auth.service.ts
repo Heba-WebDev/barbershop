@@ -57,7 +57,7 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found')
 
-    const pass = await compare(password, (user.password as string))
+    const pass = await compare(password, (user.password))
 
     if (!pass) throw new BadRequestException('Invalid credentials')
 
@@ -93,7 +93,7 @@ export class AuthService {
     if (!user.is_active) throw new UnauthorizedException('User is inactive')
     if (!user.is_verified) throw new UnauthorizedException('Unveried user')
 
-    return this.prismaService.user.update({
+    return await this.prismaService.user.update({
       where: {
         id
       },
