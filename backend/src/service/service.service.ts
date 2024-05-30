@@ -1,7 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { type CreateServiceDto } from './dto/create-service.dto'
-import { PrismaService } from 'src/prisma/prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
+import { handleErrorExceptions } from '../common/utils/index'
 
 @Injectable()
 export class ServiceService {
@@ -13,13 +14,23 @@ export class ServiceService {
     try {
       const company = await this.findCompanyForOwner(createServiceDto.user_id)
 
-      // const service = this.prisma.service.create({
-      //   data: createServiceDto
-      // })
-      return company
+      const service = await this.prisma.service.create({
+        data: {
+          name: createServiceDto.name,
+          price: createServiceDto.price,
+          // ? agregar avatar cuando se implemente Cloudinary
+          // avatar: createServiceDto.
+          company_id: company.id
+        },
+        select: {
+          avatar: true,
+          name: true,
+          price: true
+        }
+      })
+      return service
     } catch (error) {
-      // throw new InternalServerErrorException('Error Create Service')
-      this.handleError(error)
+      handleErrorExceptions(error)
     }
   }
 
@@ -30,13 +41,14 @@ export class ServiceService {
         where: { user_id: userID }
       })
 
+      console.log(company)
+
       if (!company) throw new NotFoundException('Company not exist')
       if (!company.is_active) throw new UnauthorizedException('Inactive')
 
       return company
     } catch (error) {
-      // throw new InternalServerErrorException('Error in Find By Company for User')
-      this.handleError(error)
+      handleErrorExceptions(error)
     }
   }
 
@@ -50,15 +62,7 @@ export class ServiceService {
 
       return service
     } catch (error) {
-      this.handleError(error)
-      // throw new InternalServerErrorException('Error in Find by Service UUID')
+      handleErrorExceptions(error)
     }
-  }
-
-  private handleError (error: unknown) {
-    if (error instanceof NotFoundException) throw new NotFoundException(error.message)
-    if (error instanceof UnauthorizedException) throw new UnauthorizedException(error.message)
-
-    throw new InternalServerErrorException('An unexpected error occurred')
   }
 }
