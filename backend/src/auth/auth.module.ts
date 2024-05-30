@@ -30,6 +30,7 @@ import { JwtStrategy } from './strategies/jwt.strategy'
     }),
 
     PrismaModule
-  ]
+  ],
+  exports: [AuthModule, PassportModule]
 })
 export class AuthModule {}
