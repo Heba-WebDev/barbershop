@@ -89,7 +89,9 @@ export const RegisterView: FC = () => {
           ))}
 
         <div className="input-button">
-          <button>Registrarme</button>
+          <button onSubmit={() => {
+            
+          }}>Registrarme</button>
         </div>
       </form>
       <div>
