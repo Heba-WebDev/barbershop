@@ -38,13 +38,4 @@ export class UpdateUserDto {
   @MaxLength(15)
   @IsOptional()
   readonly phone_number?: string
-
-  @ApiProperty({
-    example: 'https://image.png.com',
-    description: 'User - avatar',
-    nullable: true
-  })
-  @IsString()
-  @IsOptional()
-  readonly avatar?: string
 }

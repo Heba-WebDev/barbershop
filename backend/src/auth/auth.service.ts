@@ -1,28 +1,31 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
-  NotFoundException,
-  BadRequestException,
   InternalServerErrorException,
-  UnauthorizedException,
-  ServiceUnavailableException
+  NotFoundException,
+  ServiceUnavailableException,
+  UnauthorizedException
 } from '@nestjs/common'
 
-import * as jwt from 'jsonwebtoken'
-import { hash, compare } from 'bcrypt'
-import { createTransport } from 'nodemailer'
-import { type CreateUserDto } from './dto/create-user.dto'
-import { type LoginUserDto } from './dto/login-user.dto'
-import { PrismaService } from '../prisma/prisma.service'
-import { type User, type IJwtPayload } from './interfaces'
-import { type UpdateUserDto } from './dto/update-user.dto'
+import { compare, hash } from 'bcrypt'
+import { v2 as cloudinary } from 'cloudinary'
 import { type UUID } from 'crypto'
-import { type ResetPassUserDto } from './dto/reset-password.dto'
+import * as jwt from 'jsonwebtoken'
+import { createTransport } from 'nodemailer'
+import { PrismaService } from '../prisma/prisma.service'
+import { type CreateUserDto } from './dto/create-user.dto'
 import { type ForgotPasswordUserDto } from './dto/forgot-password.dto'
+import { type LoginUserDto } from './dto/login-user.dto'
+import { type ResetPassUserDto } from './dto/reset-password.dto'
+import { type UpdateUserDto } from './dto/update-user.dto'
+import { type IJwtPayload, type User } from './interfaces'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const streamifier = require('streamifier')
 
 @Injectable()
 export class AuthService {
-  constructor (private readonly prismaService: PrismaService) { }
+  constructor (private readonly prismaService: PrismaService) {}
 
   async create (createAuthDto: CreateUserDto) {
     const { email, password, name, phoneNumber } = createAuthDto
@@ -60,7 +63,7 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found')
 
-    const pass = await compare(password, (user.password))
+    const pass = await compare(password, user.password)
 
     if (!pass) throw new BadRequestException('Invalid credentials')
 
@@ -88,7 +91,6 @@ export class AuthService {
       name: string
       email: string
       phone_number: string
-      avatar: string
     }> {
     const user = await this.prismaService.user.findUnique({ where: { id } })
 
@@ -104,7 +106,45 @@ export class AuthService {
       select: {
         name: true,
         email: true,
-        phone_number: true,
+        phone_number: true
+      }
+    })
+  }
+
+  async updateAvatar (
+    id: string,
+    file: Express.Multer.File
+  ) {
+    const user = await this.prismaService.user.findUnique({ where: { id } })
+
+    if (!user) throw new NotFoundException("User doesn't exist")
+    if (!user.is_active) throw new UnauthorizedException('User is inactive')
+    if (!user.is_verified) throw new UnauthorizedException('Unverified user')
+
+    try {
+      const currentAvatar = user.avatar.split('/')[7].split('.')[0]
+      await cloudinary.uploader.destroy(currentAvatar)
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete current avatar')
+    }
+
+    const uploadResult = await new Promise<string>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result.secure_url)
+        }
+      )
+
+      streamifier.createReadStream(file.buffer).pipe(uploadStream)
+    })
+
+    return await this.prismaService.user.update({
+      where: {
+        id
+      },
+      data: { avatar: uploadResult },
+      select: {
         avatar: true
       }
     })
@@ -160,7 +200,9 @@ export class AuthService {
     if (process.env.NODE_ENV !== 'test') {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          throw new ServiceUnavailableException('An error occured while sending the email')
+          throw new ServiceUnavailableException(
+            'An error occured while sending the email'
+          )
         }
       })
     }

@@ -1,17 +1,19 @@
 import {
   ConflictException,
-  NotFoundException
+  NotFoundException,
+  UnauthorizedException
 } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { Test, type TestingModule } from '@nestjs/testing'
 import { validate } from 'class-validator'
 
-import { type User } from './interfaces'
 import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from './auth.service'
+import { type User } from './interfaces'
 
-import { AuthController } from './auth.controller'
+import { Readable } from 'stream'
 import { mockPrisma, mockUser } from '../../test/mocks'
+import { AuthController } from './auth.controller'
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword')
@@ -87,15 +89,14 @@ describe('AuthService', () => {
   })
 
   describe('Update User Info', () => {
+    const mockId: string = '1'
+    const mockUser: { name: string, email: string, phone_number: string, avatar: string } = {
+      name: 'sam',
+      email: 'sam@email.com',
+      phone_number: '5610747645',
+      avatar: 'https://algo.com/algo.png'
+    }
     it('should return updates user data', async () => {
-      const mockId = '1'
-      const mockUser = {
-        name: 'sam',
-        email: 'sam@email.com',
-        phone_number: '5610747645',
-        avatar: 'https://algo.com/algo.png'
-      }
-
       jest.spyOn(authService, 'update').mockResolvedValue(mockUser)
       await expect(authService.update(mockId, mockUser)).resolves.toEqual(
         mockUser
@@ -103,18 +104,96 @@ describe('AuthService', () => {
     })
 
     it('should throw notFoundExpection whe the user not exist', async () => {
-      const mockId = '999'
-      const mockUser = {
-        name: 'sam',
-        email: 'sam@email.com',
-        phone_number: '5610747645',
-        avatar: 'https://algo.com/algo.png'
-      }
-      jest
-        .spyOn(authService, 'update')
-        .mockRejectedValue(new NotFoundException("User doesn't exist")) // Use NotFoundException directly
+      jest.spyOn(authService, 'update').mockRejectedValue(new NotFoundException("User doesn't exist"))
+
       await expect(authService.update(mockId, mockUser)).rejects.toThrow(
         NotFoundException
+      )
+    })
+
+    it('should throw NotFoundException when the user does not exist', async () => {
+      jest.spyOn(authService, 'update').mockRejectedValue(new NotFoundException("User doesn't exist"))
+
+      await expect(authService.update(mockId, mockUser)).rejects.toThrow(
+        NotFoundException
+      )
+    })
+
+    it('should throw UnauthorizedException when the user is inactive', async () => {
+      jest.spyOn(authService, 'update').mockRejectedValue(new UnauthorizedException('User is inactive'))
+      await expect(authService.update(mockId, mockUser)).rejects.toThrow(
+        UnauthorizedException
+      )
+    })
+
+    it('should throw UnauthorizedException when the user is Unverified', async () => {
+      jest.spyOn(authService, 'update').mockRejectedValue(new UnauthorizedException('Unverified user'))
+      await expect(authService.update(mockId, mockUser)).rejects.toThrow(
+        UnauthorizedException
+      )
+    })
+  })
+
+  describe('update-avatar', () => {
+    const mockId: string = '1'
+    const mockAvatar: { avatar: string } = {
+      avatar: 'https://algo.com/algo.png'
+    }
+    const mockFile: Express.Multer.File = {
+      fieldname: 'avatar',
+      originalname: 'example.jpg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      size: 123456,
+      destination: '',
+      filename: 'example.jpg',
+      path: '',
+      buffer: null as unknown as Buffer,
+      stream: Readable.from([])
+    }
+
+    it('should update the user avatar correctly', async () => {
+      jest.spyOn(authService, 'updateAvatar').mockResolvedValue({
+        avatar: mockAvatar.avatar
+      })
+
+      await expect(authService.updateAvatar(mockId, mockFile)).resolves.toEqual({
+        avatar: mockAvatar.avatar
+      })
+    })
+
+    it('should fail to upload the user avatar', async () => {
+      jest.spyOn(authService, 'updateAvatar').mockImplementation(() => {
+        throw new Error('Failed to upload file')
+      })
+
+      try {
+        await authService.updateAvatar(mockId, mockFile)
+        expect(true).toBe(false)
+      } catch (error) {
+        expect(error.message).toBe('Failed to upload file')
+      }
+    })
+
+    it('should throw NotFoundException when the user does not exist', async () => {
+      jest.spyOn(authService, 'updateAvatar').mockRejectedValue(new NotFoundException("User doesn't exist"))
+
+      await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
+        NotFoundException
+      )
+    })
+
+    it('should throw UnauthorizedException when the user is inactive', async () => {
+      jest.spyOn(authService, 'updateAvatar').mockRejectedValue(new UnauthorizedException('User is inactive'))
+      await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
+        UnauthorizedException
+      )
+    })
+
+    it('should throw UnauthorizedException when the user is Unverified', async () => {
+      jest.spyOn(authService, 'updateAvatar').mockRejectedValue(new UnauthorizedException('Unverified user'))
+      await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
+        UnauthorizedException
       )
     })
   })
