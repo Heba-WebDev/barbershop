@@ -132,7 +132,6 @@ describe('AuthService', () => {
 
     it('should throw UnauthorizedException when the user is inactive', async () => {
       const inactiveUser = { ...mockUser, is_active: false }
-      console.log(inactiveUser)
       mockPrisma.user.findUnique.mockResolvedValue(inactiveUser)
 
       await expect(authService.update(mockId, mockUser)).rejects.toThrow(
