@@ -90,44 +90,60 @@ describe('AuthService', () => {
 
   describe('Update User Info', () => {
     const mockId: string = '1'
-    const mockUser: { name: string, email: string, phone_number: string, avatar: string } = {
+    const mockUser: {
+      name: string
+      email: string
+      phone_number: string
+      is_active: boolean
+      is_verified: boolean
+    } = {
       name: 'sam',
       email: 'sam@email.com',
       phone_number: '5610747645',
-      avatar: 'https://algo.com/algo.png'
+      is_active: false,
+      is_verified: false
     }
+
     it('should return updates user data', async () => {
-      jest.spyOn(authService, 'update').mockResolvedValue(mockUser)
-      await expect(authService.update(mockId, mockUser)).resolves.toEqual(
-        mockUser
-      )
+      const mockId = 'someUserId'
+
+      const updatedData = {
+        name: 'samuel',
+        email: 'samuel@hotmail.com',
+        phone_number: '1234567890'
+      }
+
+      mockUser.is_active = true
+      mockUser.is_verified = true
+
+      mockPrisma.user.findUnique.mockResolvedValue({ id: mockId, ...mockUser })
+      mockPrisma.user.update.mockResolvedValue(updatedData)
+
+      const result = await authService.update(mockId, updatedData)
+      expect(result).toEqual(updatedData)
     })
 
     it('should throw notFoundExpection whe the user not exist', async () => {
-      jest.spyOn(authService, 'update').mockRejectedValue(new NotFoundException("User doesn't exist"))
-
-      await expect(authService.update(mockId, mockUser)).rejects.toThrow(
-        NotFoundException
-      )
-    })
-
-    it('should throw NotFoundException when the user does not exist', async () => {
-      jest.spyOn(authService, 'update').mockRejectedValue(new NotFoundException("User doesn't exist"))
-
+      mockPrisma.user.findUnique.mockResolvedValue(undefined)
       await expect(authService.update(mockId, mockUser)).rejects.toThrow(
         NotFoundException
       )
     })
 
     it('should throw UnauthorizedException when the user is inactive', async () => {
-      jest.spyOn(authService, 'update').mockRejectedValue(new UnauthorizedException('User is inactive'))
+      const inactiveUser = { ...mockUser, is_active: false }
+      console.log(inactiveUser)
+      mockPrisma.user.findUnique.mockResolvedValue(inactiveUser)
+
       await expect(authService.update(mockId, mockUser)).rejects.toThrow(
         UnauthorizedException
       )
     })
 
     it('should throw UnauthorizedException when the user is Unverified', async () => {
-      jest.spyOn(authService, 'update').mockRejectedValue(new UnauthorizedException('Unverified user'))
+      const unveriedUser = { ...mockUser, is_verified: false }
+      mockPrisma.user.findUnique.mockResolvedValue(unveriedUser)
+
       await expect(authService.update(mockId, mockUser)).rejects.toThrow(
         UnauthorizedException
       )
@@ -137,7 +153,7 @@ describe('AuthService', () => {
   describe('update-avatar', () => {
     const mockId: string = '1'
     const mockAvatar: { avatar: string } = {
-      avatar: 'https://algo.com/algo.png'
+      avatar: 'https://res.cloudinary.com/dlfokylll/image/upload/v1717106810/x8iq5mmfuf802a2iux0k.jpg'
     }
     const mockFile: Express.Multer.File = {
       fieldname: 'avatar',
@@ -153,16 +169,27 @@ describe('AuthService', () => {
     }
 
     it('should update the user avatar correctly', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue({
+        id: mockId,
+        avatar: mockAvatar.avatar,
+        is_active: true,
+        is_verified: true
+      })
+
+      // se usa spyOn para simular el servicio de cloudinary en Ok
       jest.spyOn(authService, 'updateAvatar').mockResolvedValue({
         avatar: mockAvatar.avatar
       })
 
-      await expect(authService.updateAvatar(mockId, mockFile)).resolves.toEqual({
-        avatar: mockAvatar.avatar
-      })
+      await expect(authService.updateAvatar(mockId, mockFile)).resolves.toEqual(
+        {
+          avatar: mockAvatar.avatar
+        }
+      )
     })
 
     it('should fail to upload the user avatar', async () => {
+      // se usa spyOn para simular el servicio de cloudinary en fallo
       jest.spyOn(authService, 'updateAvatar').mockImplementation(() => {
         throw new Error('Failed to upload file')
       })
@@ -175,23 +202,26 @@ describe('AuthService', () => {
       }
     })
 
-    it('should throw NotFoundException when the user does not exist', async () => {
-      jest.spyOn(authService, 'updateAvatar').mockRejectedValue(new NotFoundException("User doesn't exist"))
-
+    it('should throw notFoundExpection whe the user not exist', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(undefined)
       await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
         NotFoundException
       )
     })
 
     it('should throw UnauthorizedException when the user is inactive', async () => {
-      jest.spyOn(authService, 'updateAvatar').mockRejectedValue(new UnauthorizedException('User is inactive'))
+      const inactiveUser = { ...mockUser, is_verified: false }
+      mockPrisma.user.findUnique.mockResolvedValue(inactiveUser)
+
       await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
         UnauthorizedException
       )
     })
 
     it('should throw UnauthorizedException when the user is Unverified', async () => {
-      jest.spyOn(authService, 'updateAvatar').mockRejectedValue(new UnauthorizedException('Unverified user'))
+      const unveriedUser = { ...mockUser, is_verified: false }
+      mockPrisma.user.findUnique.mockResolvedValue(unveriedUser)
+
       await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
         UnauthorizedException
       )
@@ -204,10 +234,12 @@ describe('AuthService', () => {
     }
     it('should return an error if no user was found with the same email', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null)
-      await expect(authService.forgotPassword(mockForgotPassDto)).rejects.toThrow(new ConflictException('User not found'))
+      await expect(
+        authService.forgotPassword(mockForgotPassDto)
+      ).rejects.toThrow(new ConflictException('User not found'))
     })
 
-    it('should return 200 if the user\'s email is found', async () => {
+    it("should return 200 if the user's email is found", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser)
       const result = await authService.forgotPassword(mockForgotPassDto)
       expect(result).toEqual('Email succssfully sent')
