@@ -81,10 +81,12 @@ describe('AuthService', () => {
         role: 'CLIENT'
       }
 
+      jest.spyOn(authService, 'generateJwt').mockResolvedValue('randomToken')
+
       const { token, user } = await authService.renewToken(newMockUser)
 
       expect(user).toEqual(newMockUser)
-      expect(typeof token).toBe('string')
+      expect(token).toBe('randomToken')
     })
   })
 
