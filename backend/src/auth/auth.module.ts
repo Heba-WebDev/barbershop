@@ -32,6 +32,7 @@ import { CloudinaryProvider } from './claudinary.provider'
     }),
 
     PrismaModule
-  ]
+  ],
+  exports: [AuthService, PassportModule]
 })
 export class AuthModule {}

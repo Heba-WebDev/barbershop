@@ -20,6 +20,10 @@ export const mockPrisma = {
     createMany: jest.fn()
   },
   service: {
-    findUnique: jest.fn()
+    findUnique: jest.fn(),
+    create: jest.fn()
+  },
+  company: {
+    findFirst: jest.fn()
   }
 } as const
