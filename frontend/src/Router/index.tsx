@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App";
-import { RegisterView } from "../pages";
+import { RegisterView, LoginView } from "../pages";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +17,15 @@ const router = createBrowserRouter([
       return <RegisterView />;
     },
   },
+  {
+    path: "/login",
+    loader: () => ({ message: "Hello Login!" }),
+    Component() {
+      return <LoginView />;
+    }
+  }
 ]);
+
 
 export default function Router() {
   return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />;
