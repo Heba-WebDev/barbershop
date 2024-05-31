@@ -106,7 +106,9 @@ export class AuthService {
       select: {
         name: true,
         email: true,
-        phone_number: true
+        phone_number: true,
+        is_active: true,
+        is_verified: true
       }
     })
   }
@@ -121,11 +123,9 @@ export class AuthService {
     if (!user.is_active) throw new UnauthorizedException('User is inactive')
     if (!user.is_verified) throw new UnauthorizedException('Unverified user')
 
-    try {
+    if (user.avatar) {
       const currentAvatar = user.avatar.split('/')[7].split('.')[0]
       await cloudinary.uploader.destroy(currentAvatar)
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to delete current avatar')
     }
 
     const uploadResult = await new Promise<string>((resolve, reject) => {
