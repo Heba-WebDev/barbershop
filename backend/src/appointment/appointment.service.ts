@@ -1,14 +1,17 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { type CreateAppointmentDto } from './dto/create-appointment.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { AuthService } from '../auth/auth.service'
+import { ServiceService } from '../service/service.service'
+import { handleErrorExceptions } from '../common/utils'
 
 @Injectable()
 export class AppointmentService {
   constructor (
     private readonly prisma: PrismaService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly serviceService: ServiceService
   ) {}
 
   async create (createAppointmentDto: CreateAppointmentDto) {
@@ -22,7 +25,7 @@ export class AppointmentService {
     const existUser = await this.authService.findUserByUUID(createAppointmentDto.user_id)
 
     await Promise.all(createAppointmentDto.services.map(async service => {
-      const serviceFound = await this.findServiceUUID(service)
+      const serviceFound = await this.serviceService.findServiceUUID(service)
       if (!serviceFound) throw new NotFoundException(`${service} Service not found`)
     }))
 
@@ -40,7 +43,7 @@ export class AppointmentService {
 
       return await this.createserviceForAppointment(services, appointment.id as UUID)
     } catch (error) {
-      throw new InternalServerErrorException('Error in Create Appointment')
+      handleErrorExceptions(error)
     }
   }
 
@@ -50,19 +53,12 @@ export class AppointmentService {
       service_id: service
     }))
 
-    return await this.prisma.serviceAppointment.createMany({
-      data: serviceFormated
-    })
-  }
-
-  //! move to module services
-  async findServiceUUID (id: UUID) {
     try {
-      return await this.prisma.service.findUnique({
-        where: { id }
+      return await this.prisma.serviceAppointment.createMany({
+        data: serviceFormated
       })
     } catch (error) {
-      throw new InternalServerErrorException('Error in Find by Service UUID')
+      handleErrorExceptions(error)
     }
   }
 
@@ -73,9 +69,7 @@ export class AppointmentService {
         where: { id }
       })
     } catch (error) {
-      console.log(error)
-
-      throw new InternalServerErrorException('Error in Find by Employee UUID')
+      handleErrorExceptions(error)
     }
   }
 }
