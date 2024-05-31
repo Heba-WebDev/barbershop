@@ -11,6 +11,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from './auth.service'
 import { type User } from './interfaces'
 
+import * as jwt from 'jsonwebtoken'
 import { Readable } from 'stream'
 import { mockPrisma, mockUser } from '../../test/mocks'
 import { AuthController } from './auth.controller'
@@ -87,6 +88,17 @@ describe('AuthService', () => {
 
       expect(user).toEqual(newMockUser)
       expect(token).toBe('randomToken')
+    })
+  })
+
+  describe('generate jwt', () => {
+    it('shoult return a token', async () => {
+      jest.spyOn(jwt, 'sign').mockResolvedValue('randomToken' as never)
+
+      const token = await authService.generateJwt({ id: 'randomID' })
+
+      expect(token).toBe('randomToken')
+      expect(typeof token).toBe('string')
     })
   })
 

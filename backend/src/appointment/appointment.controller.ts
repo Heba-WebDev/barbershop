@@ -1,7 +1,7 @@
 import { Controller, Post, Body } from '@nestjs/common'
 import { AppointmentService } from './appointment.service'
 import { CreateAppointmentDto } from './dto/create-appointment.dto'
-import { Auth } from 'src/auth/decorators'
+import { Auth } from '../auth/decorators'
 
 @Controller('appointment')
 export class AppointmentController {
