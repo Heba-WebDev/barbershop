@@ -1,35 +1,10 @@
-import { PassportStrategy, AuthGuard } from '@nestjs/passport'
 import { Test, type TestingModule } from '@nestjs/testing'
 import { ServiceService } from './service.service'
 import { ServiceController } from './service.controller'
 import { PrismaService } from '../prisma/prisma.service'
 import { mockPrisma, serviceMock } from '../../test/mocks'
 import { validate } from 'class-validator'
-import { type ExecutionContext } from '@nestjs/common'
-import { Strategy } from 'passport-jwt'
-
-// Mock Passport Strategy class
-class MockPassportStrategy extends PassportStrategy(Strategy) {
-  constructor () {
-    super()
-  }
-
-  async validate (payload: any) {
-    return { userId: payload.sub, username: 'user_mock' }
-  }
-
-  authenticate (req: any, options?: any) {
-    // Mock authenticate method to fulfill the Strategy interface
-  }
-}
-
-// Mock @nestjs/passport module
-jest.mock('@nestjs/passport', () => ({
-  PassportStrategy: jest.fn().mockImplementation(() => MockPassportStrategy),
-  AuthGuard: jest.fn(() => ({
-    canActivate: jest.fn((context: ExecutionContext) => true)
-  }))
-}))
+import { PassportModule } from '@nestjs/passport'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -37,6 +12,7 @@ describe('ServiceService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ServiceController],
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
         ServiceService,
         {
@@ -57,8 +33,10 @@ describe('ServiceService', () => {
     })
 
     it('should return a new Service', async () => {
-      mockPrisma.company.findUnique.mockResolvedValue({
-        id: 'randomUUID'
+      mockPrisma.company.findFirst.mockResolvedValue({
+        id: 'randomUUID',
+        is_active: true,
+        is_verified: true
       })
       mockPrisma.service.create.mockResolvedValue({
         ...serviceMock,
@@ -70,7 +48,6 @@ describe('ServiceService', () => {
         ...serviceMock,
         id: 'randomUUID'
       })
-      // Optionally, you can add more assertions here to verify other aspects of the creation
     })
   })
 })
