@@ -7,7 +7,8 @@ export const mockPrisma = {
       id: randomUUID(),
       role: 'CLIENT'
     })),
-    findUnique: jest.fn()
+    findUnique: jest.fn(),
+    update: jest.fn().mockResolvedValue({}) // Mock the update method
   },
   appointment: {
     create: jest.fn()
