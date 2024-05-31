@@ -41,8 +41,6 @@ export class ServiceService {
         where: { user_id: userID }
       })
 
-      console.log(company)
-
       if (!company) throw new NotFoundException('Company not exist')
       if (!company.is_active) throw new UnauthorizedException('Inactive')
 
