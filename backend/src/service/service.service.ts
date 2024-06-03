@@ -11,6 +11,19 @@ export class ServiceService {
     private readonly prisma: PrismaService
   ) {}
 
+  async findUnique (serviceID: UUID) {
+    try {
+      const service = await this.prisma.service.findUnique({
+        where: { id: serviceID, is_active: true }
+      })
+
+      if (!service) throw new NotFoundException('Service not exist')
+      return service
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
   async create (createServiceDto: CreateServiceDto, user: User) {
     try {
       const company = await this.findCompanyForOwner(user.id as UUID)
@@ -30,6 +43,23 @@ export class ServiceService {
         }
       })
       return service
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async updateVisibility (serviceID: UUID) {
+    try {
+      const service = await this.findUnique(serviceID)
+
+      return await this.prisma.service.update({
+        data: {
+          is_active: !service.is_active,
+          is_visible: !service.is_visible
+        },
+        where: { id: service.id },
+        select: { is_visible: true }
+      })
     } catch (error) {
       handleErrorExceptions(error)
     }

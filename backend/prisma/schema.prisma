@@ -84,6 +84,7 @@ model Service {
   is_active  Boolean @default(true)
   price      Float
   avatar     String?
+  is_visible Boolean @default(true)
   company_id String
 
   company            Company              @relation(fields: [company_id], references: [id])
