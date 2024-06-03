@@ -3,6 +3,7 @@ import { type CreateServiceDto } from './dto/create-service.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { handleErrorExceptions } from '../common/utils/index'
+import { type User } from 'src/auth/interfaces'
 
 @Injectable()
 export class ServiceService {
@@ -10,9 +11,9 @@ export class ServiceService {
     private readonly prisma: PrismaService
   ) {}
 
-  async create (createServiceDto: CreateServiceDto) {
+  async create (createServiceDto: CreateServiceDto, user: User) {
     try {
-      const company = await this.findCompanyForOwner(createServiceDto.user_id)
+      const company = await this.findCompanyForOwner(user.id as UUID)
 
       const service = await this.prisma.service.create({
         data: {
