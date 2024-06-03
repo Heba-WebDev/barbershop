@@ -2,9 +2,10 @@ import { Test, type TestingModule } from '@nestjs/testing'
 import { ServiceService } from './service.service'
 import { ServiceController } from './service.controller'
 import { PrismaService } from '../prisma/prisma.service'
-import { mockPrisma, serviceMock } from '../../test/mocks'
+import { mockPrisma, mockUser, serviceMock } from '../../test/mocks'
 import { validate } from 'class-validator'
 import { PassportModule } from '@nestjs/passport'
+import { type User } from 'src/auth/interfaces'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -43,7 +44,15 @@ describe('ServiceService', () => {
         id: 'randomUUID'
       })
 
-      const result = await service.create(serviceMock)
+      const newMockUser: User = {
+        id: 'randomUUID',
+        email: mockUser.email,
+        name: mockUser.name,
+        phoneNumber: mockUser.phoneNumber,
+        role: 'CLIENT'
+      }
+
+      const result = await service.create(serviceMock, newMockUser)
       expect(result).toEqual({
         ...serviceMock,
         id: 'randomUUID'
