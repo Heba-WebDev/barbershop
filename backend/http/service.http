@@ -3,7 +3,5 @@ Content-Type: application/json
 
 {
   "name": "",
-  "price": 1000,
-  "user_id": "e3d23197-19a8-4878-8c33-cf834c6b9e88"
-
+  "price": 1000
 }
