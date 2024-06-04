@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
 
   @layer base {
     :root {
@@ -63,8 +65,29 @@
       --border: 217.2 32.6% 17.5%;
       --input: 217.2 32.6% 17.5%;
       --ring: 212.7 26.8% 83.9%;
+
     }
   }
+
+  :root {
+    --primary-purple: #25212F;
+      --secondary-purple: #2C293A;
+      --light-cyan: #68CBD9;
+      --dark-cyan: #006A79;
+      --dark-gray: #777777;
+  }
+
+  .text-primary-purple {color: var(--primary-purple)}
+  .text-secondary-purple {color: var(--secondary-purple)}
+  .text-light-cayn {color: var(--light-cyan)}
+  .text-dark-cayn {color: var(--dark-cyan)}
+  .text-dark-gray {color: var(--dark-gray)}
+
+  .bg-primary-purple {background-color: var(--primary-purple)}
+  .bg-secondary-purple {background-color: var(--secondary-purple)}
+  .bg-light-cayn {background-color: var(--light-cyan)}
+  .bg-dark-cayn {background-color: var(--dark-cyan)}
+  .bg-dark-gray {background-color: var(--dark-gray)}
 
   @layer base {
     * {
@@ -73,4 +96,10 @@
     body {
       @apply bg-background text-foreground;
     }
+  }
+
+  body {
+    background-color: var(--primary-purple);
+    color: white;
+    font-family: 'Inter';
   }
