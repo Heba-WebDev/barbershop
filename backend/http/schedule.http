@@ -1,0 +1,14 @@
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdiOTMwMmVkLTQ1M2YtNDliMi04ZDUxLTc0NjllNWFiZDUzMiIsImlhdCI6MTcxNzQ1NDgzMSwiZXhwIjoxNzE3NDU4NDMxfQ.S5EY7XRdfF2jNzXCnbVvvBXktIyWh0vRfVhenNN622c
+
+###
+POST http://localhost:3000/api/schedule
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "day": "MONDAY",
+  "start_date": "{{$localDatetime iso8601}}",
+  "end_date": "{{$localDatetime iso8601}}",
+  "company_id": "7b9302ed-453f-49b2-8d51-7469e5abd53"
+}
+###
