@@ -1,31 +1,34 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import App from '../App'
-import { RegisterView, ServicesView, HoursView } from '../pages'
-import { MainLayout } from '@/layouts/mainLayout'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App from "../App";
+import { HomeView, RegisterView } from "../pages";
+
+interface HomeData{
+  message:string;
+}
 
 const router = createBrowserRouter([
-    {
-        element: <MainLayout />,
-        children: [
-            {
-                path: '/',
-                element: <App />,
-            },
-            {
-                path: '/register',
-                element: <RegisterView />,
-            },
-            {
-                path: '/services',
-                element: <ServicesView />,
-            },
-            {
-                path: '/hours',
-                element: <HoursView />,
-            },
-        ],
+  {
+    path: "/",
+    loader: () => ({ message: "Hello Data Router!" }),
+    Component() {
+      return <App />;
     },
-])
+  },
+  {
+    path: "/register",
+    loader: () => ({ message: "Hello Register!" }),
+    Component() {
+      return <RegisterView />;
+    },
+  },
+  {
+    path:"/home",
+    loader:():HomeData=>({message:"Hello Home!"}),
+    Component(){
+      return <HomeView/>
+    }
+  },
+]);
 
 export default function Router() {
     return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
