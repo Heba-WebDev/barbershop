@@ -43,8 +43,7 @@ export class AuthService {
         name,
         email,
         phone_number: createAuthDto.phoneNumber,
-        password: hashedPass,
-        role: 'CLIENT'
+        password: hashedPass
       }
     })
 
