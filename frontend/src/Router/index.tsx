@@ -1,28 +1,36 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "../App";
-import { RegisterView } from "../pages";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import App from '../App'
+import { RegisterView, ServicesView, HoursView } from '../pages'
+import { MainLayout } from '@/layouts/mainLayout'
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    loader: () => ({ message: "Hello Data Router!" }),
-    Component() {
-      return <App />;
+    {
+        element: <MainLayout />,
+        children: [
+            {
+                path: '/',
+                element: <App />,
+            },
+            {
+                path: '/register',
+                element: <RegisterView />,
+            },
+            {
+                path: '/services',
+                element: <ServicesView />,
+            },
+            {
+                path: '/hours',
+                element: <HoursView />,
+            },
+        ],
     },
-  },
-  {
-    path: "/register",
-    loader: () => ({ message: "Hello Register!" }),
-    Component() {
-      return <RegisterView />;
-    },
-  },
-]);
+])
 
 export default function Router() {
-  return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />;
+    return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
 }
 
 if (import.meta.hot) {
-  import.meta.hot.dispose(() => router.dispose());
+    import.meta.hot.dispose(() => router.dispose())
 }
