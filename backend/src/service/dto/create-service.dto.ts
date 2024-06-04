@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNumber, IsString } from 'class-validator'
+import { IsNumber, IsOptional, IsString } from 'class-validator'
 // import { UUID } from 'crypto'
 
 export class CreateServiceDto {
@@ -20,4 +20,13 @@ export class CreateServiceDto {
   })
   @IsNumber()
     price: number
+
+  @ApiProperty({
+    example: 'https://cloudinary.com/algo',
+    description: 'service - avatar',
+    nullable: true
+  })
+  @IsString()
+  @IsOptional()
+    avatar?: string
 }
