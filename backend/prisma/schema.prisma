@@ -36,21 +36,21 @@ enum Day {
 }
 
 model User {
-  id                    String            @id @default(uuid())
-  name                  String
-  email                 String            @unique
-  password              String
-  phone_number          String?
-  is_active             Boolean           @default(false)
-  is_verified           Boolean           @default(false)
-  avatar                String?
-  role                  Role              @default(CLIENT)
-  created_at            DateTime          @default(now())
-  updated_at            DateTime          @updatedAt
-  Company               Company[]
-  EmployeeService       EmployeeService[]
-  EmployeeCompany       EmployeeCompany[]
-  Appointment           Appointment[]
+  id              String            @id @default(uuid())
+  name            String
+  email           String            @unique
+  password        String
+  phone_number    String?
+  is_active       Boolean           @default(false)
+  is_verified     Boolean           @default(false)
+  avatar          String?
+  role            Role              @default(CLIENT)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  Company         Company[]
+  EmployeeService EmployeeService[]
+  EmployeeCompany EmployeeCompany[]
+  Appointment     Appointment[]
 }
 
 model Company {
@@ -96,8 +96,9 @@ model EmployeeService {
   user_id    String
   service_id String
 
-  user    User    @relation(fields: [user_id], references: [id])
-  service Service @relation(fields: [service_id], references: [id])
+  user            User              @relation(fields: [user_id], references: [id])
+  service         Service           @relation(fields: [service_id], references: [id])
+  EmployeeCompany EmployeeCompany[]
 }
 
 model EmployeeCompany {
@@ -106,24 +107,26 @@ model EmployeeCompany {
   user_id    String
   company_id String
 
-  user    User    @relation(fields: [user_id], references: [id])
-  company Company @relation(fields: [company_id], references: [id])
+  user        EmployeeService @relation(fields: [user_id], references: [id])
+  company     Company         @relation(fields: [company_id], references: [id])
   appointment Appointment[]
+  User        User?           @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model Appointment {
-  id          String            @id @default(uuid())
-  start_date  DateTime          @db.Date
-  start_time  DateTime          @db.Time
-  state       AppointmentState  @default(PENDING)
+  id          String           @id @default(uuid())
+  start_date  DateTime         @db.Date
+  start_time  DateTime         @db.Time
+  state       AppointmentState @default(PENDING)
   total       Float
-  created_at  DateTime?         @default(now())
-  updated_at  DateTime?         @updatedAt
+  created_at  DateTime?        @default(now())
+  updated_at  DateTime?        @updatedAt
   employee_id String
   user_id     String
 
-  employee    EmployeeCompany   @relation(fields: [employee_id], references: [id])
-  user        User              @relation(fields: [user_id], references: [id])
+  employee           EmployeeCompany      @relation(fields: [employee_id], references: [id])
+  user               User                 @relation(fields: [user_id], references: [id])
   ServiceAppointment ServiceAppointment[]
 }
 
