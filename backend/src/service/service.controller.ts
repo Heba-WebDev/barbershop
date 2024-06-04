@@ -44,4 +44,15 @@ export class ServiceController {
   async update (@Body() updateServiceDto: UpdateServiceDto) {
     return await this.serviceService.update(updateServiceDto)
   }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+    'This endpoint needs a bearear token to extract the user from the request'
+  })
+  @Patch('update-active-service/:id')
+  @Auth('OWNER')
+  async updateState (@Param('id', ParseUUIDPipe) serviceID: UUID) {
+    return await this.serviceService.updateActive(serviceID)
+  }
 }
