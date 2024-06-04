@@ -133,4 +133,22 @@ describe('ServiceService', () => {
       expect(result).toEqual(expectedData)
     })
   })
+
+  describe('Update Active Service', () => {
+    it('Should return new state active', async () => {
+      jest.spyOn(service, 'findServiceUUID').mockResolvedValueOnce(newMockService)
+
+      mockPrisma.service.update.mockResolvedValue({
+        ...newMockService,
+        is_active: !newMockService.is_active
+      })
+
+      const result = await service.updateActive(newMockService.id as UUID)
+
+      expect(result).toEqual({
+        ...newMockService,
+        is_active: !newMockService.is_active
+      })
+    })
+  })
 })
