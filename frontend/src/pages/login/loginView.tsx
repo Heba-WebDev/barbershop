@@ -31,7 +31,7 @@ export const LoginView = () => {
             <Field
               name="email"
               type="email"
-              className="shadow appearance-none border border-gray-500 w-full py-2 px-3 text-white bg-gray-800 leading-tight focus:outline-none focus:shadow-outline rounded-full" // Campo de correo con bordes y texto en blanco
+              className="shadow appearance-none border border-gray-500 w-1/2 py-2 px-3 text-white bg-gray-800 leading-tight focus:outline-none focus:shadow-outline rounded-full" // Campo de correo con bordes y texto en blanco, y ancho reducido a la mitad
               placeholder="Correo"
             />
           </div>
@@ -40,14 +40,14 @@ export const LoginView = () => {
             <Field
               name="password"
               type="password"
-              className="shadow appearance-none border border-gray-500 w-full py-2 px-3 text-white bg-gray-800 mb-3 leading-tight focus:outline-none focus:shadow-outline rounded-full" // Campo de contraseña con bordes y texto en blanco
+              className="shadow appearance-none border border-gray-500 w-1/2 py-2 px-3 text-white bg-gray-800 mb-3 leading-tight focus:outline-none focus:shadow-outline rounded-full" // Campo de contraseña con bordes y texto en blanco, y ancho reducido a la mitad
               placeholder="Contraseña"
             />
           </div>
           <div className="flex justify-center"> {/* Contenedor para centrar el botón */}
             <button
               type="submit"
-              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline rounded-full" // Botón de login morado con bordes redondeados
+              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-8 focus:outline-none focus:shadow-outline rounded-full" // Botón de login morado con bordes redondeados y más alargado
             >
               Entrar
             </button>
