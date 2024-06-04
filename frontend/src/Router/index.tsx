@@ -1,6 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "../App";
-import { RegisterView } from "../pages";
+import { HomeView, RegisterView } from "../pages";
+
+interface HomeData{
+  message:string;
+}
 
 const router = createBrowserRouter([
   {
@@ -16,6 +20,13 @@ const router = createBrowserRouter([
     Component() {
       return <RegisterView />;
     },
+  },
+  {
+    path:"/home",
+    loader:():HomeData=>({message:"Hello Home!"}),
+    Component(){
+      return <HomeView/>
+    }
   },
 ]);
 
