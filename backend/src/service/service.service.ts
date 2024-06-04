@@ -15,7 +15,7 @@ export class ServiceService {
   async findServiceUUID (id: UUID) {
     try {
       const service = await this.prisma.service.findUnique({
-        where: { id, is_active: true }
+        where: { id }
       })
 
       if (!service) throw new NotFoundException('Service not Found')
@@ -64,6 +64,20 @@ export class ServiceService {
           name: true,
           price: true
         }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async updateActive (serviceID: UUID) {
+    try {
+      const service = await this.findServiceUUID(serviceID)
+
+      return await this.prisma.service.update({
+        where: { id: serviceID },
+        data: { is_active: !service.is_active },
+        select: { is_active: true }
       })
     } catch (error) {
       handleErrorExceptions(error)

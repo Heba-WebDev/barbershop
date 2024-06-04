@@ -12,6 +12,9 @@ Authorization: Bearer {{token}}
 PATCH http://localhost:3000/api/service/remove-service/7649e8ad-4d57-43ae-8b20-fe57015279ba
 Authorization: Bearer {{token}}
 
+PATCH http://localhost:3000/api/service/update-active-service/7649e8ad-4d57-43ae-8b20-fe57015279ba
+Authorization: Bearer {{token}}
+
 PATCH  http://localhost:3000/api/service/update-detail-service
 Authorization: Bearer {{token}}
 {
