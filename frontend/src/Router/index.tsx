@@ -1,13 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "../App";
-import { RegisterView, LoginView } from "../pages";
+import { RegisterView, LoginView, HomeView } from "../pages";
 
 const router = createBrowserRouter([
   {
     path: "/",
     loader: () => ({ message: "Hello Data Router!" }),
     Component() {
-      return <App />;
+      return <HomeView />;
     },
   },
   {
