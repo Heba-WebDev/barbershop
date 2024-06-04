@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Auth, GetUser } from '../auth/decorators'
 import { User } from 'src/auth/interfaces'
 import { UUID } from 'crypto'
+import { UpdateServiceDto } from './dto/update-service.dto'
 
 @ApiTags('Service')
 @Controller('service')
@@ -31,5 +32,27 @@ export class ServiceController {
   @Auth('OWNER')
   async remove (@Param('id', ParseUUIDPipe) serviceID: UUID) {
     return await this.serviceService.updateVisibility(serviceID)
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+    'This endpoint needs a bearear token to extract the user from the request'
+  })
+  @Patch('update-detail-service')
+  @Auth('OWNER')
+  async update (@Body() updateServiceDto: UpdateServiceDto) {
+    return await this.serviceService.update(updateServiceDto)
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+    'This endpoint needs a bearear token to extract the user from the request'
+  })
+  @Patch('update-active-service/:id')
+  @Auth('OWNER')
+  async updateState (@Param('id', ParseUUIDPipe) serviceID: UUID) {
+    return await this.serviceService.updateActive(serviceID)
   }
 }

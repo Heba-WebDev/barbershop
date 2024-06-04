@@ -28,9 +28,9 @@ const router = createBrowserRouter([
 
 
 export default function Router() {
-  return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />;
+    return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
 }
 
 if (import.meta.hot) {
-  import.meta.hot.dispose(() => router.dispose());
+    import.meta.hot.dispose(() => router.dispose())
 }

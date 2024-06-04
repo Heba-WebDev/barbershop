@@ -11,5 +11,5 @@ export class UpdateServiceDto extends PartialType(CreateServiceDto) {
     nullable: false
   })
   @IsUUID()
-    id_service: UUID
+    id: UUID
 }

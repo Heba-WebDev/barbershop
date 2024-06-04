@@ -7,6 +7,7 @@ import { validate } from 'class-validator'
 import { PassportModule } from '@nestjs/passport'
 import { type User } from 'src/auth/interfaces'
 import { type UUID } from 'crypto'
+import { type UpdateServiceDto } from './dto/update-service.dto'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -19,6 +20,12 @@ describe('ServiceService', () => {
     avatar: '',
     is_visible: true,
     company_id: 'e3d23197-19a8-4878-8c33-cf834c6b9e81'
+  }
+  const newMockServiceUpdate: UpdateServiceDto = {
+    id: '7649e8ad-4d57-43ae-8b20-fe57015279ba',
+    name: 'wiwi',
+    price: 2000,
+    avatar: 'newAvatar.com'
   }
 
   beforeEach(async () => {
@@ -75,7 +82,7 @@ describe('ServiceService', () => {
   describe('Find Unique Service', () => {
     it('Should return unique Service', async () => {
       mockPrisma.service.findUnique.mockResolvedValue(newMockService)
-      const result = await service.findUnique(newMockService.id as UUID)
+      const result = await service.findServiceUUID(newMockService.id as UUID)
 
       expect(result).toEqual({
         ...newMockService
@@ -84,13 +91,13 @@ describe('ServiceService', () => {
 
     it('Should return a not found Error', async () => {
       mockPrisma.service.findUnique.mockResolvedValue(undefined)
-      await expect(service.findUnique(newMockService.id as UUID)).rejects.toThrow('Service not exist')
+      await expect(service.findServiceUUID(newMockService.id as UUID)).rejects.toThrow('Service not Found')
     })
   })
 
   describe('Change Visibility(remove)', () => {
     it('should return a new state visible', async () => {
-      jest.spyOn(service, 'findUnique').mockResolvedValue(newMockService)
+      jest.spyOn(service, 'findServiceUUID').mockResolvedValue(newMockService)
 
       mockPrisma.service.update.mockResolvedValue({
         ...newMockService,
@@ -103,6 +110,43 @@ describe('ServiceService', () => {
       expect(result).toEqual({
         ...newMockService,
         is_visible: !newMockService.is_visible,
+        is_active: !newMockService.is_active
+      })
+    })
+  })
+
+  describe('Update Details Service', () => {
+    it('Should return new data', async () => {
+      jest.spyOn(service, 'findServiceUUID').mockResolvedValueOnce(newMockService)
+
+      mockPrisma.service.update.mockResolvedValue({
+        ...newMockService
+      })
+
+      const result = await service.update(newMockServiceUpdate)
+
+      const expectedData = {
+        ...newMockServiceUpdate,
+        ...newMockService
+      }
+
+      expect(result).toEqual(expectedData)
+    })
+  })
+
+  describe('Update Active Service', () => {
+    it('Should return new state active', async () => {
+      jest.spyOn(service, 'findServiceUUID').mockResolvedValueOnce(newMockService)
+
+      mockPrisma.service.update.mockResolvedValue({
+        ...newMockService,
+        is_active: !newMockService.is_active
+      })
+
+      const result = await service.updateActive(newMockService.id as UUID)
+
+      expect(result).toEqual({
+        ...newMockService,
         is_active: !newMockService.is_active
       })
     })
