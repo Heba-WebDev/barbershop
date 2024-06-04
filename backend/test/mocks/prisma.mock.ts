@@ -21,7 +21,8 @@ export const mockPrisma = {
   },
   service: {
     findUnique: jest.fn(),
-    create: jest.fn()
+    create: jest.fn(),
+    update: jest.fn()
   },
   company: {
     findFirst: jest.fn()

@@ -3,6 +3,7 @@ import { type CreateServiceDto } from './dto/create-service.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { handleErrorExceptions } from '../common/utils/index'
+import { type User } from 'src/auth/interfaces'
 
 @Injectable()
 export class ServiceService {
@@ -10,9 +11,22 @@ export class ServiceService {
     private readonly prisma: PrismaService
   ) {}
 
-  async create (createServiceDto: CreateServiceDto) {
+  async findUnique (serviceID: UUID) {
     try {
-      const company = await this.findCompanyForOwner(createServiceDto.user_id)
+      const service = await this.prisma.service.findUnique({
+        where: { id: serviceID, is_active: true }
+      })
+
+      if (!service) throw new NotFoundException('Service not exist')
+      return service
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async create (createServiceDto: CreateServiceDto, user: User) {
+    try {
+      const company = await this.findCompanyForOwner(user.id as UUID)
 
       const service = await this.prisma.service.create({
         data: {
@@ -29,6 +43,23 @@ export class ServiceService {
         }
       })
       return service
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async updateVisibility (serviceID: UUID) {
+    try {
+      const service = await this.findUnique(serviceID)
+
+      return await this.prisma.service.update({
+        data: {
+          is_active: !service.is_active,
+          is_visible: !service.is_visible
+        },
+        where: { id: service.id },
+        select: { is_visible: true }
+      })
     } catch (error) {
       handleErrorExceptions(error)
     }
