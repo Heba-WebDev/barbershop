@@ -44,7 +44,7 @@ model User {
   is_active             Boolean           @default(false)
   is_verified           Boolean           @default(false)
   avatar                String?
-  role                  Role
+  role                  Role              @default(CLIENT)
   created_at            DateTime          @default(now())
   updated_at            DateTime          @updatedAt
   Company               Company[]

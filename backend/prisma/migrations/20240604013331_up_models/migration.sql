@@ -17,7 +17,7 @@ CREATE TABLE "User" (
     "is_active" BOOLEAN NOT NULL DEFAULT false,
     "is_verified" BOOLEAN NOT NULL DEFAULT false,
     "avatar" TEXT,
-    "role" "Role" NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'CLIENT',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -82,11 +82,12 @@ CREATE TABLE "EmployeeCompany" (
 -- CreateTable
 CREATE TABLE "Appointment" (
     "id" TEXT NOT NULL,
-    "start_date" TIMESTAMP(3) NOT NULL,
-    "state" "AppointmentState" NOT NULL,
+    "start_date" DATE NOT NULL,
+    "start_time" TIME NOT NULL,
+    "state" "AppointmentState" NOT NULL DEFAULT 'PENDING',
     "total" DOUBLE PRECISION NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
     "employee_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
@@ -127,7 +128,7 @@ ALTER TABLE "EmployeeCompany" ADD CONSTRAINT "EmployeeCompany_user_id_fkey" FORE
 ALTER TABLE "EmployeeCompany" ADD CONSTRAINT "EmployeeCompany_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "EmployeeCompany"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
