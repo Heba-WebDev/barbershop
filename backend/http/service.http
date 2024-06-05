@@ -1,5 +1,8 @@
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMmFmYzc2LTg1ZjAtNDRjYi1iZGJlLTY0NTJkYTMwZGUzZiIsImlhdCI6MTcxNjg2MjU4NywiZXhwIjoxNzE2ODY2MTg3fQ.3iHjx-iJgot7eW71UGYG8Ql1F9hN-rzXWCtT9AVL_Hc
 
+GET http://localhost:3000/api/service
+Authorization: Bearer {{token}}
+
 POST http://localhost:3000/api/service
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -7,7 +10,6 @@ Authorization: Bearer {{token}}
   "name": "",
   "price": 1000
 }
-
 
 PATCH http://localhost:3000/api/service/remove-service/7649e8ad-4d57-43ae-8b20-fe57015279ba
 Authorization: Bearer {{token}}
