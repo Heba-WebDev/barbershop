@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { RegisterView, ServicesView, HoursView, HomeView, LoginView } from '../pages'
+import { RegisterView, ServicesView, HoursView, HomeView, LoginView, ProfileView } from '../pages'
 import { MainLayout } from '@/layouts/mainLayout'
 
 const router = createBrowserRouter([
@@ -29,6 +29,10 @@ const router = createBrowserRouter([
             {
                 path: '/home',
                 element: <HomeView />,
+            },
+            {
+                path: '/profile',
+                element: <ProfileView />,
             },
         ],
     },
