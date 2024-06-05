@@ -1,5 +1,6 @@
-import { Formik, Form, Field } from 'formik';
-import { FaEnvelope, FaLock, FaUserCircle } from 'react-icons/fa'; // Importa los íconos necesarios
+import { Formik, Form, Field } from 'formik'
+import { FaEnvelope, FaLock, FaUserCircle } from 'react-icons/fa' // Importa los íconos necesarios
+import React, { useState } from 'react'
 
 export const LoginView = () => {
 const [ value, setValue] = useState ({
