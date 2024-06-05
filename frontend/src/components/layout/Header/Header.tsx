@@ -35,7 +35,8 @@ export const Header = () => {
                 {navItems.map((navItem)=>{
                     return <li className="text-purple-200 text-md mx-1 sm:mx-2 lg:mx-7  "
                      key={navItem.name}><a className="flex items-center text-2xl md:text-base" 
-                     href="#">{navItem.icon}  &nbsp; <span className=" hidden md:block">{navItem.name}</span></a></li> 
+                     href="#">{navItem.icon}  &nbsp; <span className=" hidden md:block">{navItem.name}</span>
+                     </a></li> 
                 })}
             </ul>
         </nav>

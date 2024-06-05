@@ -23,7 +23,7 @@ export const HomeView = () => {
         <ProductsBar />
 
         <RecomendationSection />
-
+        
     </div>
   )
 }
