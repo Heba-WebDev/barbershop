@@ -5,9 +5,10 @@ import { PrismaService } from '../prisma/prisma.service'
 import { mockPrisma, mockUser, serviceMock } from '../../test/mocks'
 import { validate } from 'class-validator'
 import { PassportModule } from '@nestjs/passport'
-import { type User } from 'src/auth/interfaces'
+import { type User } from '../auth/interfaces'
 import { type UUID } from 'crypto'
 import { type UpdateServiceDto } from './dto/update-service.dto'
+import { AuthService } from '../auth/auth.service'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -28,12 +29,34 @@ describe('ServiceService', () => {
     avatar: 'newAvatar.com'
   }
 
+  const newMockUser: User = {
+    id: 'e3d23197-19a8-4878-8c33-cf834c6b9e88',
+    email: mockUser.email,
+    name: mockUser.name,
+    phoneNumber: mockUser.phoneNumber,
+    role: 'CLIENT'
+  }
+
+  const expectedServices = [
+    {
+      avatar: '',
+      name: 'wiwi',
+      price: 1000
+    },
+    {
+      avatar: 'avatar2.png',
+      name: 'wiwi2',
+      price: 2000
+    }
+  ]
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ServiceController],
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
         ServiceService,
+        AuthService,
         {
           provide: PrismaService,
           useValue: mockPrisma
@@ -44,6 +67,8 @@ describe('ServiceService', () => {
     service = module.get<ServiceService>(ServiceService)
     mockPrisma.service.create.mockClear()
     mockPrisma.service.findUnique.mockClear()
+    mockPrisma.service.findMany.mockClear()
+    mockPrisma.service.update.mockClear()
   })
 
   describe('Create Service', () => {
@@ -62,14 +87,6 @@ describe('ServiceService', () => {
         ...serviceMock,
         id: 'randomUUID'
       })
-
-      const newMockUser: User = {
-        id: 'randomUUID',
-        email: mockUser.email,
-        name: mockUser.name,
-        phoneNumber: mockUser.phoneNumber,
-        role: 'CLIENT'
-      }
 
       const result = await service.create(serviceMock, newMockUser)
       expect(result).toEqual({
@@ -149,6 +166,17 @@ describe('ServiceService', () => {
         ...newMockService,
         is_active: !newMockService.is_active
       })
+    })
+  })
+
+  describe('Find all service', () => {
+    it('Should return all service', async () => {
+      mockPrisma.company.findFirst.mockResolvedValue({ id: newMockUser.id, is_active: true })
+      mockPrisma.service.findMany.mockResolvedValue(expectedServices)
+
+      const result = await service.findAll(newMockUser)
+
+      expect(result).toEqual(expectedServices)
     })
   })
 })
