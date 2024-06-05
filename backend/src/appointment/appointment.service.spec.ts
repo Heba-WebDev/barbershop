@@ -7,6 +7,8 @@ import { appointmentMock, mockPrisma } from '../../test/mocks/'
 import { AppointmentController } from './appointment.controller'
 import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from '../auth/auth.service'
+import { ServiceService } from '../service/service.service'
+import { PassportModule } from '@nestjs/passport'
 
 const createAppointmentDto = plainToInstance(CreateAppointmentDto, appointmentMock)
 
@@ -19,11 +21,13 @@ describe('AppointmentService', () => {
       providers: [
         AppointmentService,
         AuthService,
+        ServiceService,
         {
           provide: PrismaService,
           useValue: mockPrisma
         }
-      ]
+      ],
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })]
     }).compile()
 
     appointmentService = module.get<AppointmentService>(AppointmentService)
