@@ -25,6 +25,7 @@ export const LoginView = () => {
             setUser(res.user)
             setToken(res.token)
             toast.success('Iniciado sesión exitosamente')
+            navigate('/')
         } catch (error: unknown) {
             if(error instanceof Error) toast.error(error.message)
         }
@@ -72,7 +73,7 @@ export const LoginView = () => {
                                 <FaLock className=' absolute bottom-3 left-4 opacity-20'/>
                                 <input
                                     id="password"
-                                    type="text"
+                                    type="password"
                                     placeholder="Contraseña"
                                     {...formik.getFieldProps('password')}
                                     className="pl-10 w-full text-dark-gray bg-transparent border border-gray-500
