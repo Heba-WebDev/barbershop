@@ -6,3 +6,8 @@ export interface service {
     price: number;
     company_id: string;
 }
+
+export interface IAddService {
+    name: string;
+    price: string;
+}
