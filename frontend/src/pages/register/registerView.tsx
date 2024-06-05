@@ -1,102 +1,105 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC, useState } from "react";
-import { RegisterInput } from "./registerInputs";
-import { ValidateName } from "../../utils/validateInputs/validateInputName";
-import { ValidateEmail } from "../../utils/validateInputs/validateInputEmail";
-import { ValidatePassword } from "../../utils/validateInputs/validateInputPassword";
-import { ValidateConfirmPassword } from "../../utils/validateInputs/validateInputConfirmPassword";
-type Register = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import { Formik, Form } from "Formik";
+import * as Yup from "yup";
 
-export const RegisterView: FC = () => {
-  const [register, setRegister] = useState<Register>({
+export const RegisterView = () => {
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .min(2, "nombre debe tener minimo 2 caracteres")
+      .required("nombre es requerido"),
+    email: Yup.string()
+      .email("no es un email valido")
+      .required("email requerido"),
+    password: Yup.string()
+      .required("la contraseña es requerida")
+      .min(8, "la contraseña debe tener 8 caracteres o más")
+      .matches(/[0-9]/, "Password requires a number")
+      .matches(/[a-z]/, "Password requires a lowercase letter")
+      .matches(/[A-Z]/, "Password requires an uppercase letter"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password")], "la contraseña no coincide")
+      .required("confirmar contraseña es requerido"),
+  });
+  const initialValues = {
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-  });
-  const [validateInputName, setValidateInputName] = useState(false);
-  const [validateInputEmail, setValidateInputEmail] = useState<string[]>([]);
-  const [validateInputPassword, setValidateInputPassword] = useState<string[]>(
-    []
-  );
-  const [validateInputConfirmPassword, setValidateInputConfirmPassword] =
-    useState<string[]>([]);
-  const algo = ValidatePassword({ register });
-
-  const handleInput = (e: any) => {
-    const { name, value } = e.target;
-    setRegister({ ...register, [name]: value });
-    if (name === "password") {
-      setValidateInputPassword(algo); 
-    }
-    setValidateInputName(ValidateName({ register }));
-
-    console.log(name, value);
-    setValidateInputEmail(ValidateEmail({ register }));
-    setValidateInputConfirmPassword(ValidateConfirmPassword({ register }));
   };
-  console.log(validateInputEmail);
+  const handleSubmit = () => {};
+
   return (
-    <section className="">
-      <h2>Registro</h2>
-      <form>
-        <RegisterInput
-          htmlFor="name"
-          labelName="Nombre:"
-          inputType="name"
-          inputName="name"
-          placeholder="escribe tu nombre"
-          handleInput={handleInput}
-        />
-        <RegisterInput
-          htmlFor="email"
-          labelName="Email:"
-          inputType="email"
-          inputName="email"
-          placeholder="escribe tu correo electronico"
-          handleInput={handleInput}
-        />
-        {validateInputEmail.length > 0 &&
-          validateInputEmail.map((item, index) => <p key={index}>{item}</p>)}
-
-        <RegisterInput
-          htmlFor="password"
-          labelName="Contraseña:"
-          inputType="password"
-          inputName="password"
-          placeholder="escribe tu contraseña"
-          handleInput={handleInput}
-        />
-        {validateInputPassword.length > 0 &&
-          validateInputPassword.map((item, index) => <p key={index}>{item}</p>)}
-        <RegisterInput
-          htmlFor="confirmPassword"
-          labelName="Confirmar contraseña:"
-          inputType="password"
-          inputName="confirmPassword"
-          placeholder="confirma tu contraseña"
-          handleInput={handleInput}
-        />
-        {validateInputConfirmPassword.length > 0 &&
-          validateInputConfirmPassword.map((item, index) => (
-            <p key={index}>{item}</p>
-          ))}
-
-        <div className="input-button">
-          <button onSubmit={() => {
-            
-          }}>Registrarme</button>
-        </div>
-      </form>
+    <main>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+          <Form>
+            <div>
+              <label>Nombre :</label>
+              <input
+                name="name"
+                type="text"
+                placeholder="escribe tu nombre"
+                onChange={formik.handleChange}
+                value={formik.values.name}
+              />
+              {formik.errors.name && formik.touched.password ? (
+                <p className=" text-red-600">{formik.errors.name}</p>
+              ) : (
+                ""
+              )}
+            </div>
+            <div>
+              <label>Correo electronico :</label>
+              <input
+                name="email"
+                type="email"
+                placeholder="registro@ejemplo.com"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+              />
+              {formik.errors.email && formik.touched.password ? (
+                <p className=" text-red-600">{formik.errors.email}</p>
+              ) : (
+                ""
+              )}
+            </div>
+            <div>
+              <label>Contraseña :</label>
+              <input
+                name="password"
+                type="password"
+                placeholder="escribe tu contraseña"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+              {formik.touched.password && (
+                <p className=" text-red-600">{formik.errors.password}</p>
+              )}
+            </div>
+            <div>
+              <label>Confirmar contraseña :</label>
+              <input
+                name="confirmPassword"
+                type="password"
+                placeholder="confirma tu contraseña"
+                onChange={formik.handleChange}
+                value={formik.values.confirmPassword}
+              />
+              {formik.touched.confirmPassword && (
+                <p className=" text-red-600">{formik.errors.confirmPassword}</p>
+              )}
+            </div>
+            <button type="submit">Registrarme</button>
+          </Form>
+        )}
+      </Formik>
       <div>
-        <a href="/">Iniciar sesión</a>
+        <span>Ya tienes una cuenta?</span>
+        <a href="/login">Entrar</a>
       </div>
-    </section>
+    </main>
   );
 };
