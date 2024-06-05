@@ -55,9 +55,9 @@ export const RegisterView = () => {
                             <div className=' relative'>
                                 <FaUser className='absolute bottom-3 left-4 opacity-20' />
                                 <input
-                                    name="name"
-                                    type="text"
-                                    placeholder="Nombre"
+                                    name='name'
+                                    type='text'
+                                    placeholder='Nombre'
                                     onChange={formik.handleChange}
                                     value={formik.values.name}
                                     className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
@@ -65,8 +65,8 @@ export const RegisterView = () => {
                                 />
                             </div>
                         </div>
-                        {formik.errors.name && formik.touched.password ? (
-                            <span className=" text-red-600 text-sm pt-1">{formik.errors.name}</span>
+                        {formik.errors.name && formik.touched.name ? (
+                            <span className='text-red-600 text-sm pt-1'>{formik.errors.name}</span>
                         ) : (
                             ''
                         )}
@@ -77,16 +77,16 @@ export const RegisterView = () => {
                                 <input
                                     name='email'
                                     type='email'
-                                    placeholder="registro@ejemplo.com"
+                                    placeholder='registro@ejemplo.com'
                                     onChange={formik.handleChange}
                                     value={formik.values.email}
-                                    className="pl-10 w-full text-dark-gray bg-transparent border border-gray-500
-                                 rounded-full py-[2px] h-10 focus:outline-none"
+                                    className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none'
                                 />
                             </div>
                         </div>
                         {formik.errors.email && formik.touched.password ? (
-                            <span className=" text-red-600 text-sm pt-1">{formik.errors.email}</span>
+                            <span className='text-red-600 text-sm pt-1'>{formik.errors.email}</span>
                         ) : (
                             ''
                         )}
@@ -95,9 +95,9 @@ export const RegisterView = () => {
                             <div className='relative'>
                                 <FaLock className='absolute bottom-3 left-4 opacity-20'/>
                                 <input
-                                    name="password"
-                                    type="password"
-                                    placeholder="Escribe tu contraseña"
+                                    name='password'
+                                    type='passwor'
+                                    placeholder='Escribe tu contraseña'
                                     onChange={formik.handleChange}
                                     value={formik.values.password}
                                     className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
@@ -105,7 +105,7 @@ export const RegisterView = () => {
                                 />
                             </div>
                             {formik.touched.password && (
-                                <p className=" text-red-600  text-sm pt-1">{formik.errors.password}</p>
+                                <p className='text-red-600  text-sm pt-1'>{formik.errors.password}</p>
                             )}
                         </div>
                         <div>
@@ -114,9 +114,9 @@ export const RegisterView = () => {
                                 <div className=' relative'>
                                     <FaLock className='absolute bottom-3 left-4 opacity-20'/>
                                     <input
-                                        name="confirmPassword"
-                                        type="password"
-                                        placeholder="Confirma tu contraseña"
+                                        name='confirmPassword'
+                                        type='password'
+                                        placeholder='Confirma tu contraseña'
                                         onChange={formik.handleChange}
                                         value={formik.values.confirmPassword}
                                         className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
@@ -124,7 +124,7 @@ export const RegisterView = () => {
                                     />
                                 </div>
                                 {formik.touched.confirmPassword && (
-                                    <p className=" text-red-600  text-sm pt-1">{formik.errors.confirmPassword}</p>
+                                    <p className='text-red-600  text-sm pt-1'>{formik.errors.confirmPassword}</p>
                                 )}
                             </div>
                         </div>
@@ -134,9 +134,9 @@ export const RegisterView = () => {
                                 <div className=' relative'>
                                     <FaPhone className='absolute bottom-3 left-4 opacity-20'/>
                                     <input
-                                        name="phoneNumber"
-                                        type="text"
-                                        placeholder="Escribe tu numbero de telefono"
+                                        name='phoneNumber'
+                                        type='text'
+                                        placeholder='Escribe tu numbero de telefono'
                                         onChange={formik.handleChange}
                                         value={formik.values.phoneNumber}
                                         className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
@@ -144,14 +144,14 @@ export const RegisterView = () => {
                                     />
                                 </div>
                                 {formik.touched.phoneNumber && (
-                                    <p className=" text-red-600  text-sm pt-1">{formik.errors.phoneNumber}</p>
+                                    <p className='text-red-600  text-sm pt-1'>{formik.errors.phoneNumber}</p>
                                 )}
                             </div>
                         </div>
                         <Button type='submit' className=' mt-[30%] bg-light-cayn rounded-full max-w-36 mx-auto w-full text-black hover:bg-[#68CBD9]'>Registrarme</Button>
                         <div className=' flex gap-1 text-center mx-auto text-sm'>
                             <span>Ya tienes una cuenta?</span>
-                            <a href="/login" className=' text-light-cayn font-bold underline'>Entrar</a>
+                            <a href='/login' className=' text-light-cayn font-bold underline'>Entrar</a>
                         </div>
                     </Form>
                 )}
