@@ -3,14 +3,35 @@ import { type CreateServiceDto } from './dto/create-service.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { handleErrorExceptions } from '../common/utils/index'
-import { type User } from 'src/auth/interfaces'
+import { type User } from '../auth/interfaces'
 import { type UpdateServiceDto } from './dto/update-service.dto'
+import { AuthService } from '../auth/auth.service'
 
 @Injectable()
 export class ServiceService {
   constructor (
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly auth: AuthService
   ) {}
+
+  async findAll (user: User) {
+    try {
+      const company = this.findCompanyForOwner(user.id as UUID)
+      return await this.prisma.service.findMany({
+        where: {
+          company_id: (await company).id,
+          is_active: true
+        },
+        select: {
+          avatar: true,
+          name: true,
+          price: true
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
 
   async findServiceUUID (id: UUID) {
     try {
@@ -109,7 +130,7 @@ export class ServiceService {
       })
 
       if (!company) throw new NotFoundException('Company not exist')
-      if (!company.is_active) throw new UnauthorizedException('Inactive')
+      if (!company.is_active) throw new UnauthorizedException('Company is Inactive')
 
       return company
     } catch (error) {
