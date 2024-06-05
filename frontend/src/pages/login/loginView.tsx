@@ -2,6 +2,16 @@ import { Formik, Form, Field } from 'formik';
 import { FaEnvelope, FaLock, FaUserCircle } from 'react-icons/fa'; // Importa los íconos necesarios
 
 export const LoginView = () => {
+const [ value, setValue] = useState ({
+  email: '',
+  password: ''
+});
+const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setValue({ ...value, [event.target.value]: event.target.value });
+};
+const handleSumbit = () => {
+  console.log(value)
+}
   return (
     <Formik
       initialValues={{ email: '', password: '', photo: null }}
