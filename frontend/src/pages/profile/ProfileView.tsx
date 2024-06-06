@@ -1,15 +1,15 @@
 import { useEffect } from 'react'
-import { userSate } from '@/state/user'
-import { useNavigate } from 'react-router-dom'
+import { userState } from '@/state/user'
+import { Link, useNavigate } from 'react-router-dom'
 import { ProfileAvatar } from '@/lib/profileAvatar'
 import { FaEdit, FaSignOutAlt, FaBusinessTime } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { toast } from 'react-toastify'
 
 export const ProfileView = () => {
-    const token = userSate((store) => store.token)
-    const user = userSate((state) => state.user)
-    const logout = userSate((state) => state.logout)
+    const token = userState((store) => store.token)
+    const user = userState((state) => state.user)
+    const logout = userState((state) => state.logout)
 
     const navigate = useNavigate()
     const handleLogOut = () => {
@@ -35,7 +35,7 @@ export const ProfileView = () => {
             <div className=' mt-[10%]'>
                 <div className='p-1 rounded-lg flex w-42 items-center'>
                     <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaBusinessTime className='opacity-50'/></span>
-                    <Button className=' bg-transparent hover:bg-transparent'>Ser propietario</Button>
+                    <Button className=' bg-transparent hover:bg-transparent'><Link to='/company' className='underline'>Ser propietario</Link></Button>
                 </div>
                 <div className='p-1 rounded-lg flex w-42 items-center'>
                     <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaSignOutAlt className='opacity-50'/></span>

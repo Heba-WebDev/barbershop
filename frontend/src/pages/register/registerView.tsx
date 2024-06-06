@@ -5,13 +5,13 @@ import { registerApi } from './api'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { registerValidationSchema } from './schema'
-import { userSate } from '@/state/user'
+import { userState } from '@/state/user'
 import { useEffect } from 'react'
 import { IRegister, IValues } from './types'
 
 export const RegisterView = () => {
     const navigate = useNavigate()
-    const token = userSate((store) => store.token)
+    const token = userState((store) => store.token)
     const initialValues: IValues = {
         name: '',
         email: '',
