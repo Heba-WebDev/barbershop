@@ -5,8 +5,8 @@ POST http://localhost:3000/api/auth/new-account
 Content-Type: application/json
 
 {
-  "name": "Gaspar",
-  "email": "test@gmail.com",
+  "name": "Gabriel",
+  "email": "test2@gmail.com",
   "password": "qqqqqq7T",
   "phoneNumber": "+569 87264971"  
 }
@@ -16,7 +16,7 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@gmail.com",
+  "email": "test2@gmail.com",
   "password": "qqqqqq7T"
 }
 ###
