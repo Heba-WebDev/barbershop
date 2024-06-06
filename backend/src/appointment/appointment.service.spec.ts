@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from '../auth/auth.service'
 import { ServiceService } from '../service/service.service'
 import { PassportModule } from '@nestjs/passport'
+import { CompanyService } from '../company/company.service'
 
 const createAppointmentDto = plainToInstance(CreateAppointmentDto, appointmentMock)
 
@@ -22,6 +23,7 @@ describe('AppointmentService', () => {
         AppointmentService,
         AuthService,
         ServiceService,
+        CompanyService,
         {
           provide: PrismaService,
           useValue: mockPrisma

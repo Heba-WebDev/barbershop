@@ -20,9 +20,6 @@ import type { CreateUserDto, ForgotPasswordUserDto, LoginUserDto, ResetPassUserD
 import { type IJwtPayload, type User } from './interfaces'
 import { handleErrorExceptions } from '../common/utils'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const streamifier = require('streamifier')
-
 @Injectable()
 export class AuthService {
   constructor (private readonly prismaService: PrismaService) {}
