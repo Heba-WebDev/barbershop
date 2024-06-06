@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 
+import { getTimeForDate } from '../common/utils'
 import { PrismaService } from '../prisma/prisma.service'
-import { type UpdateScheduleDto } from './dto'
-import { getTimeForDate } from '../../src/common/utils/getTimeFromDate'
+import { type QueryParamsScheduleDto, type UpdateScheduleDto } from './dto'
 
 @Injectable()
 export class ScheduleService {
@@ -12,7 +12,7 @@ export class ScheduleService {
     const schedule = await this.findOneById(id)
     const hasCompany = await this.findOneCompanyByUserId(userId)
 
-    if (schedule.company_id !== hasCompany.id) throw new UnauthorizedException('error')
+    if (schedule.company_id !== hasCompany.id) throw new UnauthorizedException('The company is not the user\'s')
 
     const scheduleUpdated = await this.prismaService.schedule.update({
       data: updateScheduleDto,
@@ -30,9 +30,11 @@ export class ScheduleService {
     return schedule
   }
 
-  async findAllByCompanyId (companyId: string) {
+  async findAllByCompanyId (querys: QueryParamsScheduleDto, companyId: string) {
+    const { day, state } = querys
+
     const schedules = await this.prismaService.schedule.findMany({
-      where: { company_id: companyId }
+      where: { company_id: companyId, day, state }
     })
 
     const schedulesFormated = schedules.map(schedule => ({
