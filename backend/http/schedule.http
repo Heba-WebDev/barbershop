@@ -1,14 +1,15 @@
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdiOTMwMmVkLTQ1M2YtNDliMi04ZDUxLTc0NjllNWFiZDUzMiIsImlhdCI6MTcxNzQ1NDgzMSwiZXhwIjoxNzE3NDU4NDMxfQ.S5EY7XRdfF2jNzXCnbVvvBXktIyWh0vRfVhenNN622c
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3M2QxZTFiLWEzZjItNDMxMS1iYzllLTNhMzBiYTI3NGQ5NyIsImlhdCI6MTcxNzY1MTQ4NCwiZXhwIjoxNzE3NjU1MDg0fQ.jSqTlUPoyX-c8BAlxcRBAfezIgz7ShfwdzDXZbIThag
 
 ###
-POST http://localhost:3000/api/schedule
+PATCH http://localhost:3000/api/schedule/43
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "day": "MONDAY",
-  "start_date": "{{$localDatetime iso8601}}",
-  "end_date": "{{$localDatetime iso8601}}",
-  "company_id": "7b9302ed-453f-49b2-8d51-7469e5abd53"
+  "initial_start_date": "1970-01-01T01:00:00Z",
+  "interval": 60
 }
+###
+GET http://localhost:3000/api/schedule/122bff6c-7b6c-481e-aceb-47a43ebd8b8f
+Content-Type: application/json
 ###
