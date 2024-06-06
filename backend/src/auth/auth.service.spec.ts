@@ -15,6 +15,7 @@ import * as jwt from 'jsonwebtoken'
 import { Readable } from 'stream'
 import { mockPrisma, mockUser } from '../../test/mocks'
 import { AuthController } from './auth.controller'
+import { type UUID } from 'crypto'
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword')
@@ -22,6 +23,14 @@ jest.mock('bcrypt', () => ({
 
 describe('AuthService', () => {
   let authService: AuthService
+
+  const newMockUser: User = {
+    id: 'randomUUID',
+    email: mockUser.email,
+    name: mockUser.name,
+    phoneNumber: mockUser.phoneNumber,
+    role: 'CLIENT'
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -74,14 +83,6 @@ describe('AuthService', () => {
 
   describe('renew token', () => {
     it('shoult return an user with new token', async () => {
-      const newMockUser: User = {
-        id: 'randomUUID',
-        email: mockUser.email,
-        name: mockUser.name,
-        phoneNumber: mockUser.phoneNumber,
-        role: 'CLIENT'
-      }
-
       jest.spyOn(authService, 'generateJwt').mockResolvedValue('randomToken')
 
       const { token, user } = await authService.renewToken(newMockUser)
@@ -256,6 +257,22 @@ describe('AuthService', () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser)
       const result = await authService.forgotPassword(mockForgotPassDto)
       expect(result).toEqual('Email succssfully sent')
+    })
+  })
+
+  describe('Change user role', () => {
+    it('Should return new role user', async () => {
+      mockPrisma.user.update.mockResolvedValue({
+        ...newMockUser,
+        role: 'OWNER'
+      })
+
+      const result = await authService.changeRole(newMockUser.id as UUID)
+
+      expect(result).toEqual({
+        ...newMockUser,
+        role: 'OWNER'
+      })
     })
   })
 })
