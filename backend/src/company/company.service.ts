@@ -26,18 +26,48 @@ export class CompanyService {
           address: true,
           avatar: true,
           name: true,
-          phone_number: true
+          phone_number: true,
+          id: true
         }
       })
 
-      if (company) await this.auth.changeRole(user.id as UUID)
+      if (company) {
+        await this.auth.changeRole(user.id as UUID)
+        await this.newEmployee(user.id as UUID, company.id as UUID)
+      }
 
       return company
     } catch (error) {
       handleErrorExceptions(error)
     }
+  }
 
-    return 'This action adds a new company'
+  async newEmployee (userID: UUID, companyID: UUID) {
+    try {
+      const employee = await this.getEmployee(userID, companyID)
+      if (employee) throw new ConflictException('Employee exist')
+
+      return await this.prisma.employeeCompany.create({
+        data: {
+          company_id: companyID,
+          user_id: userID
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async getEmployee (userID: UUID, companyID: UUID) {
+    try {
+      return await this.prisma.employeeCompany.findFirst({
+        where: {
+          company_id: companyID, user_id: userID
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
   }
 
   async companyExist (userID: UUID) {
