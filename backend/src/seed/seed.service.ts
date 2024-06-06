@@ -21,6 +21,8 @@ export class SeedService {
     await this.insertSchedules(companies)
     await this.insertServices(companies)
 
+    // await this.insertEmployeesCompany(users, companies)
+
     return users
   }
 
@@ -50,6 +52,7 @@ export class SeedService {
     type newCompany = Company & { user_id: string }
 
     const companies: newCompany[] = []
+    const usersToEmployee: any[] = []
 
     seedCompanies.forEach((company, index) => {
       companies.push({
@@ -60,11 +63,20 @@ export class SeedService {
 
     // await this.prismaService.company.createMany({ data: (companies as any) })
 
-    return await this.prismaService.$transaction(
+    const companiesDb = await this.prismaService.$transaction(
       // eslint-disable-next-line
       companies.map((company) => this.prismaService.company.create({ data: company }))
     )
 
+    if (!companiesDb) throw new Error()
+
+    companiesDb.forEach(company => {
+      usersToEmployee.push({ company_id: company.id, user_id: company.user_id })
+    })
+
+    await this.prismaService.employeeCompany.createMany({ data: usersToEmployee })
+
+    return companiesDb
     // return companies
   }
 
@@ -76,10 +88,8 @@ export class SeedService {
     const schedulesWithCompany: SchedulesInDb[] = []
 
     companies.forEach(company => {
-      Array(2).fill(null).forEach(() => {
-        seedSchedules.forEach(schedule => {
-          schedulesWithCompany.push({ ...schedule, company_id: company.id })
-        })
+      seedSchedules.forEach(schedule => {
+        schedulesWithCompany.push({ ...schedule, company_id: company.id })
       })
     })
 
@@ -105,15 +115,46 @@ export class SeedService {
     await this.prismaService.service.createMany({ data: servicesWithCompany })
   }
 
+  // private async insertEmployeesCompany (users: any[], companies: any[]) {
+  //   const promisesUpdateUser: any[] = []
+  //   const employeeQuantity = 8
+
+  //   const employeesWithCompany = Array(employeeQuantity).fill(null).map((_, index) => {
+  //     const randomLimit = this.getRandomNumber(0, companies.length)
+
+  //     promisesUpdateUser.push({
+  //       where: { id: users[index].id },
+  //       data: { role: 'EMPLOYEE' }
+  //     })
+
+  //     return {
+  //       user_id: users[index].id,
+  //       company_id: companies[randomLimit].id
+  //     }
+  //   })
+
+  //   await this.prismaService.employeeCompany.createMany({ data: employeesWithCompany })
+  //   await this.prismaService.user.updateMany({
+  //     data: {
+  //       role: 'EMPLOYEE'
+  //     },
+  //     where: {
+  //       id: {
+  //         in: Array(employeeQuantity).fill(null).map((_, index) => users[users.length - (index + 1)].id)
+  //       }
+  //     }
+  //   })
+  // }
+
   private async deleteTables () {
     await this.prismaService.service.deleteMany()
     await this.prismaService.schedule.deleteMany()
+    await this.prismaService.employeeCompany.deleteMany()
     await this.prismaService.company.deleteMany()
     await this.prismaService.user.deleteMany()
 
     await this.prismaService.service.deleteMany()
     await this.prismaService.appointment.deleteMany()
-    await this.prismaService.employeeCompany.deleteMany()
     await this.prismaService.employeeService.deleteMany()
     await this.prismaService.serviceAppointment.deleteMany()
   }

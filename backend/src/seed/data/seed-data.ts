@@ -1,4 +1,4 @@
-import { faker, tr } from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 export enum Role {
   CLIENT = 'CLIENT',
@@ -42,8 +42,7 @@ export interface Company {
 
 export interface Schedule {
   day: Day
-  start_date: Date
-  end_date: Date
+  state: boolean
 }
 
 export interface Service {
@@ -98,15 +97,15 @@ export interface SeedData {
   companies: Company[]
   schedules: Schedule[]
   services: Service[]
-  // employeeService: EmployeeService[]
-  // employeeCompany: EmployeeCompany[]
+  // employeesCompany: EmployeeCompany[]
+  // employeeServices: EmployeeService[]
   // appointment: Appointment[]
   // serviceAppointment: ServiceAppointment[]
 }
 
 const ownersQuantity = 4
 
-const users: User[] = Array(10).fill(null).map((_, index) => ({
+const users: User[] = Array(20).fill(null).map((_, index) => ({
   name: faker.person.fullName(),
   email: faker.internet.email(),
   password: 'qqqqq',
@@ -124,41 +123,34 @@ const companies: Company[] = Array(ownersQuantity).fill(null).map(() => ({
   avatar: null
 }))
 
-const schedules = [
+const schedules: Schedule[] = [
   {
     day: Day.MONDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   },
   {
     day: Day.TUESDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   },
   {
     day: Day.WEDNESDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   },
   {
     day: Day.THURSDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   },
   {
     day: Day.FRIDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   },
   {
     day: Day.SATURDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   },
   {
     day: Day.SUNDAY,
-    start_date: new Date(),
-    end_date: new Date()
+    state: faker.datatype.boolean()
   }
 ]
 
@@ -250,21 +242,14 @@ export const seedData: SeedData = {
   companies,
   schedules,
   services
-  // employeeService: {
+
+  // employeeServices: {
   //   id: '1',
   //   user_id: '1',
   //   service_id: '1',
   //   user: {}, // Aquí se llenaría con los detalles del usuario
   //   service: {} // Aquí se llenaría con los detalles del servicio
-  // },
-  // employeeCompany: {
-  //   id: '1',
-  //   is_active: true,
-  //   user_id: '1',
-  //   company_id: '1',
-  //   user: {}, // Aquí se llenaría con los detalles del usuario
-  //   company: {} // Aquí se llenaría con los detalles de la empresa
-  // },
+  // }
   // appointment: {
   //   id: '1',
   //   start_date: new Date(),
