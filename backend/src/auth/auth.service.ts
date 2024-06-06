@@ -9,19 +9,15 @@ import {
 } from '@nestjs/common'
 
 import { compare, hash } from 'bcrypt'
-import { v2 as cloudinary } from 'cloudinary'
-import { type UUID } from 'crypto'
-import * as jwt from 'jsonwebtoken'
 import { createTransport } from 'nodemailer'
+import { type UUID } from 'crypto'
+import { v2 as cloudinary } from 'cloudinary'
+import * as jwt from 'jsonwebtoken'
+import * as streamifier from 'streamifier'
+
 import { PrismaService } from '../prisma/prisma.service'
-import { type CreateUserDto } from './dto/create-user.dto'
-import { type ForgotPasswordUserDto } from './dto/forgot-password.dto'
-import { type LoginUserDto } from './dto/login-user.dto'
-import { type ResetPassUserDto } from './dto/reset-password.dto'
-import { type UpdateUserDto } from './dto/update-user.dto'
+import type { CreateUserDto, ForgotPasswordUserDto, LoginUserDto, ResetPassUserDto, UpdateUserDto } from './dto'
 import { type IJwtPayload, type User } from './interfaces'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const streamifier = require('streamifier')
 
 @Injectable()
 export class AuthService {
