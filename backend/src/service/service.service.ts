@@ -1,22 +1,22 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { type CreateServiceDto } from './dto/create-service.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { handleErrorExceptions } from '../common/utils/index'
 import { type User } from '../auth/interfaces'
 import { type UpdateServiceDto } from './dto/update-service.dto'
-import { AuthService } from '../auth/auth.service'
+import { CompanyService } from '../company/company.service'
 
 @Injectable()
 export class ServiceService {
   constructor (
     private readonly prisma: PrismaService,
-    private readonly auth: AuthService
+    private readonly company: CompanyService
   ) {}
 
   async findAll (user: User) {
     try {
-      const company = this.findCompanyForOwner(user.id as UUID)
+      const company = this.company.findCompanyForOwner(user.id as UUID)
       return await this.prisma.service.findMany({
         where: {
           company_id: (await company).id,
@@ -49,7 +49,7 @@ export class ServiceService {
 
   async create (createServiceDto: CreateServiceDto, user: User) {
     try {
-      const company = await this.findCompanyForOwner(user.id as UUID)
+      const company = await this.company.findCompanyForOwner(user.id as UUID)
 
       const service = await this.prisma.service.create({
         data: {
@@ -117,22 +117,6 @@ export class ServiceService {
         where: { id: service.id },
         select: { is_visible: true }
       })
-    } catch (error) {
-      handleErrorExceptions(error)
-    }
-  }
-
-  //! move to module company
-  async findCompanyForOwner (userID: UUID) {
-    try {
-      const company = await this.prisma.company.findFirst({
-        where: { user_id: userID }
-      })
-
-      if (!company) throw new NotFoundException('Company not exist')
-      if (!company.is_active) throw new UnauthorizedException('Company is Inactive')
-
-      return company
     } catch (error) {
       handleErrorExceptions(error)
     }

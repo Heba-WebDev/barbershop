@@ -9,6 +9,7 @@ import { type User } from '../auth/interfaces'
 import { type UUID } from 'crypto'
 import { type UpdateServiceDto } from './dto/update-service.dto'
 import { AuthService } from '../auth/auth.service'
+import { CompanyService } from '../company/company.service'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -57,6 +58,7 @@ describe('ServiceService', () => {
       providers: [
         ServiceService,
         AuthService,
+        CompanyService,
         {
           provide: PrismaService,
           useValue: mockPrisma
