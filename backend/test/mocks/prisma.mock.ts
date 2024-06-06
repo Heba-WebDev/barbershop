@@ -25,5 +25,9 @@ export const mockPrisma = {
   },
   company: {
     findFirst: jest.fn()
+  },
+  schedule: {
+    findUnique: jest.fn(),
+    findMany: jest.fn()
   }
 } as const
