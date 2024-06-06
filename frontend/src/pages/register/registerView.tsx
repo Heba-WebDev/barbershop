@@ -1,105 +1,161 @@
-import { Form, Formik } from 'formik'
-import * as Yup from 'yup'
+import { Formik, Form } from 'formik'
+import { Button } from '@/components/ui/button'
+import { FaEnvelope, FaLock, FaUserCircle, FaUser, FaPhone } from 'react-icons/fa'
+import { registerApi } from './api'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import { registerValidationSchema } from './schema'
+import { userSate } from '@/state/user'
+import { useEffect } from 'react'
+import { IRegister, IValues } from './types'
 
 export const RegisterView = () => {
-    const validationSchema = Yup.object({
-        name: Yup.string()
-            .min(2, 'nombre debe tener minimo 2 caracteres')
-            .required('nombre es requerido'),
-        email: Yup.string()
-            .email('no es un email valido')
-            .required('email requerido'),
-        password: Yup.string()
-            .required('la contraseña es requerida')
-            .min(8, 'la contraseña debe tener 8 caracteres o más')
-            .matches(/[0-9]/, 'Password requires a number')
-            .matches(/[a-z]/, 'Password requires a lowercase letter')
-            .matches(/[A-Z]/, 'Password requires an uppercase letter'),
-        confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password')], 'la contraseña no coincide')
-            .required('confirmar contraseña es requerido'),
-    })
-    const initialValues = {
+    const navigate = useNavigate()
+    const token = userSate((store) => store.token)
+    const initialValues: IValues = {
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
+        phoneNumber: ''
     }
-    const handleSubmit = () => {}
+    const handleSubmit = async(values: IValues) => {
+        try {
+            const val: IRegister = {
+                name: values.name,
+                email: values.email,
+                password: values.password,
+                phoneNumber: values.phoneNumber
+            }
+            await registerApi(val)
+            toast.success('Iniciado sesión exitosamente')
+            navigate('/login')
+        } catch (error: unknown) {
+            if(error instanceof Error) toast.error(error.message)
+        }
+    }
+    useEffect(() => {
+        if(token) {
+            navigate('/')
+        }
+    }, [navigate, token])
 
     return (
-        <main>
+        <main className='grid items-center max-w-md mx-auto  h-screen px-4'>
             <Formik
                 initialValues={initialValues}
-                validationSchema={validationSchema}
+                validationSchema={registerValidationSchema}
                 onSubmit={handleSubmit}
             >
                 {(formik) => (
-                    <Form>
-                        <div>
-                            <label>Nombre :</label>
-                            <input
-                                name="name"
-                                type="text"
-                                placeholder="escribe tu nombre"
-                                onChange={formik.handleChange}
-                                value={formik.values.name}
-                            />
-                            {formik.errors.name && formik.touched.password ? (
-                                <p className=" text-red-600">{formik.errors.name}</p>
-                            ) : (
-                                ''
-                            )}
+                    <Form className='flex flex-col gap-3'>
+                        <FaUserCircle  className=' text-purple-500 text-9xl rounded-full mx-auto p-1 mb-6 bg-gray-800'/>
+                        <div className='flex flex-col'>
+                            <label htmlFor='name'></label>
+                            <div className=' relative'>
+                                <FaUser className='absolute bottom-3 left-4 opacity-20' />
+                                <input
+                                    name='name'
+                                    type='text'
+                                    placeholder='Nombre'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.name}
+                                    className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none'
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label>Correo electronico :</label>
-                            <input
-                                name="email"
-                                type="email"
-                                placeholder="registro@ejemplo.com"
-                                onChange={formik.handleChange}
-                                value={formik.values.email}
-                            />
-                            {formik.errors.email && formik.touched.password ? (
-                                <p className=" text-red-600">{formik.errors.email}</p>
-                            ) : (
-                                ''
-                            )}
+                        {formik.errors.name && formik.touched.name ? (
+                            <span className='text-red-600 text-sm pt-1'>{formik.errors.name}</span>
+                        ) : (
+                            ''
+                        )}
+                        <div className='flex flex-col'>
+                            <label htmlFor='email'></label>
+                            <div className='relative'>
+                                <FaEnvelope className=' absolute bottom-3 left-4 opacity-20'/>
+                                <input
+                                    name='email'
+                                    type='email'
+                                    placeholder='registro@ejemplo.com'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.email}
+                                    className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none'
+                                />
+                            </div>
                         </div>
+                        {formik.errors.email && formik.touched.password ? (
+                            <span className='text-red-600 text-sm pt-1'>{formik.errors.email}</span>
+                        ) : (
+                            ''
+                        )}
                         <div>
-                            <label>Contraseña :</label>
-                            <input
-                                name="password"
-                                type="password"
-                                placeholder="escribe tu contraseña"
-                                onChange={formik.handleChange}
-                                value={formik.values.password}
-                            />
+                            <label htmlFor='password'></label>
+                            <div className='relative'>
+                                <FaLock className='absolute bottom-3 left-4 opacity-20'/>
+                                <input
+                                    name='password'
+                                    type='passwor'
+                                    placeholder='Escribe tu contraseña'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.password}
+                                    className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none'
+                                />
+                            </div>
                             {formik.touched.password && (
-                                <p className=" text-red-600">{formik.errors.password}</p>
+                                <p className='text-red-600  text-sm pt-1'>{formik.errors.password}</p>
                             )}
                         </div>
                         <div>
-                            <label>Confirmar contraseña :</label>
-                            <input
-                                name="confirmPassword"
-                                type="password"
-                                placeholder="confirma tu contraseña"
-                                onChange={formik.handleChange}
-                                value={formik.values.confirmPassword}
-                            />
-                            {formik.touched.confirmPassword && (
-                                <p className=" text-red-600">{formik.errors.confirmPassword}</p>
-                            )}
+                            <label htmlFor='confirmPassword'></label>
+                            <div className=' relative'>
+                                <div className=' relative'>
+                                    <FaLock className='absolute bottom-3 left-4 opacity-20'/>
+                                    <input
+                                        name='confirmPassword'
+                                        type='password'
+                                        placeholder='Confirma tu contraseña'
+                                        onChange={formik.handleChange}
+                                        value={formik.values.confirmPassword}
+                                        className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none'
+                                    />
+                                </div>
+                                {formik.touched.confirmPassword && (
+                                    <p className='text-red-600  text-sm pt-1'>{formik.errors.confirmPassword}</p>
+                                )}
+                            </div>
                         </div>
-                        <button type="submit">Registrarme</button>
+                        <div>
+                            <label htmlFor='phoneNumber'></label>
+                            <div className=' relative'>
+                                <div className=' relative'>
+                                    <FaPhone className='absolute bottom-3 left-4 opacity-20'/>
+                                    <input
+                                        name='phoneNumber'
+                                        type='text'
+                                        placeholder='Escribe tu numbero de telefono'
+                                        onChange={formik.handleChange}
+                                        value={formik.values.phoneNumber}
+                                        className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none'
+                                    />
+                                </div>
+                                {formik.touched.phoneNumber && (
+                                    <p className='text-red-600  text-sm pt-1'>{formik.errors.phoneNumber}</p>
+                                )}
+                            </div>
+                        </div>
+                        <Button type='submit' className=' mt-[30%] bg-light-cayn rounded-full max-w-36 mx-auto w-full text-black hover:bg-[#68CBD9]'>Registrarme</Button>
+                        <div className=' flex gap-1 text-center mx-auto text-sm'>
+                            <span>Ya tienes una cuenta?</span>
+                            <a href='/login' className=' text-light-cayn font-bold underline'>Entrar</a>
+                        </div>
                     </Form>
                 )}
             </Formik>
-            <div>
-                <span>Ya tienes una cuenta?</span>
-                <a href="/login">Entrar</a>
-            </div>
         </main>
     )
 }

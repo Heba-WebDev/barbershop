@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Param, ParseUUIDPipe } from '@nestjs/common'
+import { Controller, Post, Body, Patch, Param, ParseUUIDPipe, Get } from '@nestjs/common'
 import { ServiceService } from './service.service'
 import { CreateServiceDto } from './dto/create-service.dto'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -11,6 +11,17 @@ import { UpdateServiceDto } from './dto/update-service.dto'
 @Controller('service')
 export class ServiceController {
   constructor (private readonly serviceService: ServiceService) {}
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+    'This endpoint needs a bearear token to extract the user from the request'
+  })
+  @Get()
+  @Auth('OWNER')
+  async findAll (@GetUser() user: User) {
+    return await this.serviceService.findAll(user)
+  }
 
   @ApiBearerAuth()
   @ApiOperation({

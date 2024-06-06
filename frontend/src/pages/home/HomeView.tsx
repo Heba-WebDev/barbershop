@@ -1,5 +1,5 @@
-import { Header } from "@/components/layout";
-import { HeroSlider, ProductsBar, RecomendationSection, SearchSection } from "./Components";
+import { Header } from '@/components/layout'
+import { HeroSlider, ProductsBar, RecomendationSection, SearchSection } from './Components'
 //import { useLoaderData } from "react-router-dom"
 // interface HomeData{
 //   message:string;
@@ -11,19 +11,19 @@ import { HeroSlider, ProductsBar, RecomendationSection, SearchSection } from "./
 
 export const HomeView = () => {
 
-  //const data=useLoaderData() as HomeData;
-  return (
-    <div className=" bg-[#13001f] px-5 sm:px-0">
-        <Header />
+    //const data=useLoaderData() as HomeData;
+    return (
+        <div className=" bg-[#13001f] px-5 sm:px-0">
+            <Header />
 
-        <SearchSection/>
+            <SearchSection/>
 
-        <HeroSlider />
+            <HeroSlider />
 
-        <ProductsBar />
+            <ProductsBar />
 
-        <RecomendationSection />
+            <RecomendationSection />
 
-    </div>
-  )
+        </div>
+    )
 }

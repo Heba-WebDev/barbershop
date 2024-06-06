@@ -1,59 +1,100 @@
-import { Formik, Form, Field } from 'formik';
-import { FaEnvelope, FaLock, FaUserCircle } from 'react-icons/fa'; // Importa los íconos necesarios
+import { useEffect } from 'react'
+import { Formik, Form } from 'formik'
+import { loginValidationSchema } from './schema'
+import { Button } from '@/components/ui/button'
+import { FaEnvelope, FaLock, FaUserCircle } from 'react-icons/fa'
+import { ILogin } from './types'
+import { loginApi } from './api'
+import { toast } from 'react-toastify'
+import { userSate } from '@/state/user'
+import { useNavigate } from 'react-router-dom'
+
 
 export const LoginView = () => {
-  return (
-    <Formik
-      initialValues={{ email: '', password: '', photo: null }}
-      onSubmit={(values) => {
-        console.log(values);
-      }}
-    >
-      <Form className="flex flex-col items-center justify-center min-h-screen bg-gray-900"> {/* Fondo más oscuro */}
-        <div className="w-full max-w-md m-4">
-          <div className="mb-4 flex justify-center">
-            <label htmlFor="photo-upload" className="cursor-pointer">
-              {/* Ícono de usuario en morado y más cuadrado con bordes redondeados */}
-              <FaUserCircle className="text-purple-500 text-9xl rounded-full p-1 bg-gray-800" />
-              <input
-                id="photo-upload"
-                name="photo"
-                type="file"
-                className="hidden"
-                onChange={(event) => {
-                  // Manejar la carga de la foto aquí
-                }}
-              />
-            </label>
-          </div>
-          <div className="mb-4 flex items-center justify-center">
-            <FaEnvelope className="mr-2 text-white" /> {/* Ícono de correo en blanco */}
-            <Field
-              name="email"
-              type="email"
-              className="shadow appearance-none border border-gray-500 w-1/2 py-2 px-3 text-white bg-gray-800 leading-tight focus:outline-none focus:shadow-outline rounded-full" // Campo de correo con bordes y texto en blanco, y ancho reducido a la mitad
-              placeholder="Correo"
-            />
-          </div>
-          <div className="mb-6 flex items-center justify-center">
-            <FaLock className="mr-2 text-white" /> {/* Ícono de candado en blanco */}
-            <Field
-              name="password"
-              type="password"
-              className="shadow appearance-none border border-gray-500 w-1/2 py-2 px-3 text-white bg-gray-800 mb-3 leading-tight focus:outline-none focus:shadow-outline rounded-full" // Campo de contraseña con bordes y texto en blanco, y ancho reducido a la mitad
-              placeholder="Contraseña"
-            />
-          </div>
-          <div className="flex justify-center"> {/* Contenedor para centrar el botón */}
-            <button
-              type="submit"
-              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-8 focus:outline-none focus:shadow-outline rounded-full" // Botón de login morado con bordes redondeados y más alargado
+    const navigate = useNavigate()
+    const initialValues = {
+        email: '',
+        password: ''
+    }
+    const setToken = userSate((state) => state.setToken)
+    const setUser = userSate((state) => state.setUser)
+    const token = userSate((store) => store.token)
+    const handleSubmit = async (values: ILogin) => {
+        try {
+            const res = await loginApi(values)
+            setUser(res.user)
+            setToken(res.token)
+            toast.success('Iniciado sesión exitosamente')
+            navigate('/')
+        } catch (error: unknown) {
+            if(error instanceof Error) toast.error(error.message)
+        }
+    }
+    useEffect(() => {
+        if(token) {
+            navigate('/')
+        }
+    }, [navigate, token])
+    return (
+        <section className=" grid items-center max-w-md mx-auto  h-screen px-4">
+            <Formik
+                initialValues={initialValues}
+                validationSchema={loginValidationSchema}
+                onSubmit={handleSubmit}
             >
-              Entrar
-            </button>
-          </div>
-        </div>
-      </Form>
-    </Formik>
-  );
-};
+                {(formik) => (
+                    <Form
+                        onSubmit={formik.handleSubmit}
+                        className=" flex flex-col gap-3"
+                    >
+                        <FaUserCircle  className=' text-purple-500 text-9xl rounded-full mx-auto p-1 mb-6 bg-gray-800'/>
+                        <div className=" flex flex-col">
+                            <label htmlFor="email"></label>
+                            <div className=' relative'>
+                                <FaEnvelope className=' absolute bottom-3 left-4 opacity-20'/>
+                                <input
+                                    id="email"
+                                    type="text"
+                                    placeholder="Correo"
+                                    {...formik.getFieldProps('email')}
+                                    className="pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none"
+                                />
+                            </div>
+                            {formik.touched.email && formik.errors.email ? (
+                                <span className=" text-red-600 text-sm pt-1">
+                                    {formik.errors.email}
+                                </span>
+                            ) : null}
+                        </div>
+                        <div className=" flex flex-col">
+                            <label htmlFor="password"></label>
+                            <div className='w-full relative'>
+                                <FaLock className=' absolute bottom-3 left-4 opacity-20'/>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    placeholder="Contraseña"
+                                    {...formik.getFieldProps('password')}
+                                    className="pl-10 w-full text-dark-gray bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none"
+                                />
+                            </div>
+                            {formik.touched.password && formik.errors.password ? (
+                                <span className=" text-red-600 text-sm pt-1">
+                                    {formik.errors.password}
+                                </span>
+                            ) : null}
+                        </div>
+                        <Button
+                            type='submit'
+                            className=' mt-[30%] bg-light-cayn rounded-full max-w-36 mx-auto w-full text-black hover:bg-[#68CBD9]'
+                        >
+                Entrar
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
+        </section>
+    )
+}
