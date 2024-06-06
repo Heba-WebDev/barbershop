@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch } from '@nestjs/common'
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { ScheduleService } from './schedule.service'
 import { Auth, GetUser } from '../auth/decorators'
 import { User } from '../auth/interfaces'
-import { UpdateScheduleDto } from './dto'
+import { QueryParamsScheduleDto, UpdateScheduleDto } from './dto'
 
 @ApiTags('Schedule')
 @Controller('schedule')
@@ -13,8 +13,9 @@ export class ScheduleController {
 
   @Get(':companyId')
   async findAllByCompanyId (
-  @Param('companyId', ParseUUIDPipe) companyId: string) {
-    return await this.scheduleService.findAllByCompanyId(companyId)
+  @Query() querys: QueryParamsScheduleDto,
+    @Param('companyId', ParseUUIDPipe) companyId: string) {
+    return await this.scheduleService.findAllByCompanyId(querys, companyId)
   }
 
   @Patch(':id')
