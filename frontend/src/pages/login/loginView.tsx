@@ -6,7 +6,7 @@ import { FaEnvelope, FaLock, FaUserCircle } from 'react-icons/fa'
 import { ILogin } from './types'
 import { loginApi } from './api'
 import { toast } from 'react-toastify'
-import { userSate } from '@/state/user'
+import { userState } from '@/state/user'
 import { useNavigate } from 'react-router-dom'
 
 
@@ -16,9 +16,9 @@ export const LoginView = () => {
         email: '',
         password: ''
     }
-    const setToken = userSate((state) => state.setToken)
-    const setUser = userSate((state) => state.setUser)
-    const token = userSate((store) => store.token)
+    const setToken = userState((state) => state.setToken)
+    const setUser = userState((state) => state.setUser)
+    const token = userState((store) => store.token)
     const handleSubmit = async (values: ILogin) => {
         try {
             const res = await loginApi(values)
