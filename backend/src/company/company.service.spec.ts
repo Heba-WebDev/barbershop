@@ -21,6 +21,13 @@ describe('CompanyService', () => {
     role: 'CLIENT'
   }
 
+  const newMockEmployee = {
+    id: 'random',
+    is_active: true,
+    user_id: 'random',
+    company_id: 'random'
+  }
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CompanyController],
@@ -48,6 +55,7 @@ describe('CompanyService', () => {
     })
 
     it('should return a new company', async () => {
+      jest.spyOn(companyService, 'companyExist').mockResolvedValue(null)
       mockPrisma.company.create.mockResolvedValue({
         ...mockCompany
       })
@@ -56,6 +64,36 @@ describe('CompanyService', () => {
       expect(result).toEqual({
         ...mockCompany
       })
+    })
+  })
+
+  describe('New employee', () => {
+    beforeEach(async () => {
+      const error = await validate(mockCompany)
+      expect(error.length).toBe(0)
+    })
+
+    it('Should return a new employee', async () => {
+      jest.spyOn(companyService, 'getEmployee').mockResolvedValue(undefined)
+      mockPrisma.employeeCompany.create.mockResolvedValue({
+        ...newMockEmployee
+      })
+
+      const result = await companyService.newEmployee(newMockUser.id as UUID, newMockEmployee.company_id as UUID)
+
+      expect(result).toEqual(newMockEmployee)
+    })
+  })
+
+  describe('Get Employee', () => {
+    it('Should return employee', async () => {
+      mockPrisma.employeeCompany.findFirst.mockResolvedValue({
+        ...newMockEmployee
+      })
+
+      const result = await companyService.getEmployee(newMockUser.id as UUID, newMockEmployee.company_id as UUID)
+
+      expect(result).toEqual(newMockEmployee)
     })
   })
 
