@@ -36,20 +36,20 @@ enum Day {
 }
 
 model User {
-  id              String            @id @default(uuid())
-  name            String
-  email           String            @unique
-  password        String
-  phone_number    String?
-  is_active       Boolean           @default(false)
-  is_verified     Boolean           @default(false)
-  avatar          String?
-  role            Role              @default(CLIENT)
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
-  Company         Company[]
-  EmployeeService EmployeeService[]
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String
+  phone_number String?
+  is_active    Boolean  @default(false)
+  is_verified  Boolean  @default(false)
+  avatar       String?
+  role         Role     @default(CLIENT)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
   EmployeeCompany EmployeeCompany[]
+  Company         Company[]
   Appointment     Appointment[]
 }
 
@@ -69,13 +69,17 @@ model Company {
 }
 
 model Schedule {
-  id         Int      @id @default(autoincrement())
-  day        Day
-  start_date DateTime
-  end_date   DateTime
-  company_id String
+  id                Int       @id @default(autoincrement())
+  day               Day
+  initial_start_date DateTime? @default("1970-01-01T09:00:00Z") @db.Time()
+  initial_end_date   DateTime? @default("1970-01-01T13:00:00Z") @db.Time()
+  final_start_date   DateTime? @default("1970-01-01T14:00:00Z") @db.Time()
+  final_end_date     DateTime? @default("1970-01-01T19:00:00Z") @db.Time()
+  interval Int? @default(30)
+  company_id        String
+  state             Boolean   @default(false)
 
-  company Company @relation(fields: [company_id], references: [id])
+  company           Company   @relation(fields: [company_id], references: [id])
 }
 
 model Service {
@@ -96,9 +100,8 @@ model EmployeeService {
   user_id    String
   service_id String
 
-  user            User              @relation(fields: [user_id], references: [id])
-  service         Service           @relation(fields: [service_id], references: [id])
-  EmployeeCompany EmployeeCompany[]
+  employee EmployeeCompany @relation(fields: [user_id], references: [id])
+  service  Service         @relation(fields: [service_id], references: [id])
 }
 
 model EmployeeCompany {
@@ -107,11 +110,10 @@ model EmployeeCompany {
   user_id    String
   company_id String
 
-  user        EmployeeService @relation(fields: [user_id], references: [id])
-  company     Company         @relation(fields: [company_id], references: [id])
-  appointment Appointment[]
-  User        User?           @relation(fields: [userId], references: [id])
-  userId      String?
+  company         Company           @relation(fields: [company_id], references: [id])
+  user            User              @relation(fields: [user_id], references: [id])
+  appointment     Appointment[]
+  employeeservice EmployeeService[]
 }
 
 model Appointment {
