@@ -3,16 +3,53 @@ import { type CreateServiceDto } from './dto/create-service.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { handleErrorExceptions } from '../common/utils/index'
+import { type User } from '../auth/interfaces'
+import { type UpdateServiceDto } from './dto/update-service.dto'
+import { AuthService } from '../auth/auth.service'
 
 @Injectable()
 export class ServiceService {
   constructor (
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly auth: AuthService
   ) {}
 
-  async create (createServiceDto: CreateServiceDto) {
+  async findAll (user: User) {
     try {
-      const company = await this.findCompanyForOwner(createServiceDto.user_id)
+      const company = this.findCompanyForOwner(user.id as UUID)
+      return await this.prisma.service.findMany({
+        where: {
+          company_id: (await company).id,
+          is_active: true
+        },
+        select: {
+          avatar: true,
+          name: true,
+          price: true
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async findServiceUUID (id: UUID) {
+    try {
+      const service = await this.prisma.service.findUnique({
+        where: { id }
+      })
+
+      if (!service) throw new NotFoundException('Service not Found')
+
+      return service
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async create (createServiceDto: CreateServiceDto, user: User) {
+    try {
+      const company = await this.findCompanyForOwner(user.id as UUID)
 
       const service = await this.prisma.service.create({
         data: {
@@ -34,6 +71,57 @@ export class ServiceService {
     }
   }
 
+  async update (updateServiceDto: UpdateServiceDto) {
+    try {
+      const { id, ...data } = updateServiceDto
+
+      await this.findServiceUUID(id)
+
+      return await this.prisma.service.update({
+        where: { id },
+        data: { ...data },
+        select: {
+          avatar: true,
+          name: true,
+          price: true
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async updateActive (serviceID: UUID) {
+    try {
+      const service = await this.findServiceUUID(serviceID)
+
+      return await this.prisma.service.update({
+        where: { id: serviceID },
+        data: { is_active: !service.is_active },
+        select: { is_active: true }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async updateVisibility (serviceID: UUID) {
+    try {
+      const service = await this.findServiceUUID(serviceID)
+
+      return await this.prisma.service.update({
+        data: {
+          is_active: !service.is_active,
+          is_visible: !service.is_visible
+        },
+        where: { id: service.id },
+        select: { is_visible: true }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
   //! move to module company
   async findCompanyForOwner (userID: UUID) {
     try {
@@ -42,23 +130,9 @@ export class ServiceService {
       })
 
       if (!company) throw new NotFoundException('Company not exist')
-      if (!company.is_active) throw new UnauthorizedException('Inactive')
+      if (!company.is_active) throw new UnauthorizedException('Company is Inactive')
 
       return company
-    } catch (error) {
-      handleErrorExceptions(error)
-    }
-  }
-
-  async findServiceUUID (id: UUID) {
-    try {
-      const service = await this.prisma.service.findUnique({
-        where: { id }
-      })
-
-      if (!service) throw new NotFoundException('Service not Found')
-
-      return service
     } catch (error) {
       handleErrorExceptions(error)
     }

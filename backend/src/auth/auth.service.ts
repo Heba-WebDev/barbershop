@@ -18,6 +18,10 @@ import * as streamifier from 'streamifier'
 import { PrismaService } from '../prisma/prisma.service'
 import type { CreateUserDto, ForgotPasswordUserDto, LoginUserDto, ResetPassUserDto, UpdateUserDto } from './dto'
 import { type IJwtPayload, type User } from './interfaces'
+import { handleErrorExceptions } from '../common/utils'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const streamifier = require('streamifier')
 
 @Injectable()
 export class AuthService {
@@ -228,6 +232,17 @@ export class AuthService {
       return user
     } catch (error) {
       throw new InternalServerErrorException('Error in find by User UUID')
+    }
+  }
+
+  async changeRole (userID: UUID) {
+    try {
+      return await this.prismaService.user.update({
+        where: { id: userID },
+        data: { role: 'OWNER' }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
     }
   }
 }

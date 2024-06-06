@@ -5,6 +5,7 @@ import { ServiceModule } from './service/service.module'
 import { AppointmentModule } from './appointment/appointment.module'
 import { ScheduleModule } from './schedule/schedule.module';
 import { SeedModule } from './seed/seed.module';
+import { CompanyModule } from './company/company.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SeedModule } from './seed/seed.module';
     AppointmentModule,
     ScheduleModule,
     SeedModule
+    CompanyModule
   ]
 })
 export class AppModule {}
