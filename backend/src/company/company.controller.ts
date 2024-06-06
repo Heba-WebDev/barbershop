@@ -1,10 +1,11 @@
 import { Controller, Post, Body } from '@nestjs/common'
 import { CompanyService } from './company.service'
 import { CreateCompanyDto } from './dto/create-company.dto'
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Auth, GetUser } from '../auth/decorators'
 import { User } from '../auth/interfaces/user.interface'
 
+@ApiTags('Company')
 @Controller('company')
 export class CompanyController {
   constructor (private readonly companyService: CompanyService) {}
