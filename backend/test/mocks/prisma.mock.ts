@@ -28,6 +28,7 @@ export const mockPrisma = {
   },
   schedule: {
     findUnique: jest.fn(),
-    findMany: jest.fn()
+    findMany: jest.fn(),
+    update: jest.fn()
   }
 } as const
