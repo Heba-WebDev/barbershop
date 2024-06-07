@@ -16,7 +16,7 @@ import { CompanyModule } from './company/company.module'
     ServiceModule,
     AppointmentModule,
     ScheduleModule,
-    SeedModule,
+    ...process.env.NODE_ENV === 'development' ? [SeedModule] : [],
     CompanyModule
   ]
 })
