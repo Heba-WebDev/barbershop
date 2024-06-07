@@ -96,4 +96,18 @@ export class CompanyService {
       handleErrorExceptions(error)
     }
   }
+
+  async findEmployeeByUserUUID (id: UUID) {
+    try {
+      const employee = await this.prisma.employeeCompany.findFirst({
+        where: { id }
+      })
+
+      if (!employee) throw new NotFoundException('Employee not exist')
+
+      return employee
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
 }
