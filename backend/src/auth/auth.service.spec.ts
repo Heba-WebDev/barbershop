@@ -29,7 +29,7 @@ describe('AuthService', () => {
     email: mockUser.email,
     name: mockUser.name,
     phoneNumber: mockUser.phoneNumber,
-    role: 'CLIENT'
+    role: ['CLIENT']
   }
 
   beforeEach(async () => {

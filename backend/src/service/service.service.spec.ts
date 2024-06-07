@@ -35,7 +35,7 @@ describe('ServiceService', () => {
     email: mockUser.email,
     name: mockUser.name,
     phoneNumber: mockUser.phoneNumber,
-    role: 'CLIENT'
+    role: ['CLIENT']
   }
 
   const expectedServices = [

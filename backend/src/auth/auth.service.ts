@@ -237,7 +237,7 @@ export class AuthService {
     try {
       return await this.prismaService.user.update({
         where: { id: userID },
-        data: { role: 'OWNER' }
+        data: { role: ['OWNER'] }
       })
     } catch (error) {
       handleErrorExceptions(error)
