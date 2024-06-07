@@ -16,7 +16,7 @@ export class AppointmentController {
     'This endpoint needs a bearear token to extract the user from the request'
   })
   @Post()
-  @Auth('CLIENT')
+  @Auth('CLIENT', 'OWNER', 'EMPLOYEE')
   async create (@Body() createAppointmentDto: CreateAppointmentDto, @GetUser() user: User) {
     return await this.appointmentService.create(createAppointmentDto, user)
   }
