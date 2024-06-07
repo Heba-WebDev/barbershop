@@ -5,5 +5,5 @@ export interface User {
   name: string
   email: string
   phoneNumber: string
-  role: ValidRole
+  role: ValidRole[]
 }

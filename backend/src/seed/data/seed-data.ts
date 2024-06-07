@@ -30,7 +30,7 @@ export interface User {
   avatar?: string | null
   is_active: boolean
   is_verified: boolean
-  role: Role
+  role: Role[]
 }
 
 export interface Company {
@@ -113,7 +113,7 @@ const users: User[] = Array(20).fill(null).map((_, index) => ({
   avatar: '',
   is_active: true,
   is_verified: true,
-  role: index < ownersQuantity ? Role.OWNER : Role.CLIENT
+  role: index < ownersQuantity ? [Role.OWNER] : [Role.CLIENT]
 }))
 
 const companies: Company[] = Array(ownersQuantity).fill(null).map(() => ({
