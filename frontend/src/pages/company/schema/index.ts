@@ -4,7 +4,7 @@ export const companyValidationSceham = Yup.object({
     name: Yup.string()
         .min(2, 'Nombre debe tener minimo 2 caracteres')
         .required('Nombre es requerido'),
-    phoneNumber: Yup.string()
+    phone_number: Yup.string()
         .required('Confirmar numero de telefono')
         .min(8),
     address: Yup.string()

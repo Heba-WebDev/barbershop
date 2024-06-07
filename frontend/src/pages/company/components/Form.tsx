@@ -5,9 +5,14 @@ import { IRegisterCompany } from '../types'
 import { userState } from '@/state/user'
 import { useNavigate } from 'react-router-dom'
 import { FaUser, FaPhone, FaUserCircle, FaTrash, FaBuilding } from 'react-icons/fa'
+import { registerCompanyApi } from '../api'
+import { toast } from 'react-toastify'
 
 export const CompanyForm = () => {
     const token = userState((state) => state.token)
+    const usr = userState((state) => state.user)
+    const user = userState((state) => state.setUser)
+    const company = userState((state) => state.setCompany)
     const navigate = useNavigate()
     const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null)
     useEffect(() => {
@@ -24,11 +29,28 @@ export const CompanyForm = () => {
         }
     }
     const handleSubmit = async(values: IRegisterCompany) => {
-        console.log(values)
+        try {
+            const res = await registerCompanyApi(values, token as string)
+            toast.success(`La Barbería ${values.name} ha sido registrada`)
+            user({
+                id: usr?.id as string,
+                name: usr?.name as string,
+                email: usr?.email as string,
+                phone_number: usr?.phone_number as string,
+                is_active: 'true',
+                is_verified: 'true',
+                avatar: usr?.avatar as string,
+                role: 'OWNER'
+            })
+            company(res)
+            navigate('/')
+        } catch (error: unknown) {
+            if(error instanceof Error) toast.error(error.message)
+        }
     }
     const initialValues = {
         name: '',
-        phoneNumber: '',
+        phone_number: '',
         address: '',
         avatar: null
     }
@@ -62,19 +84,19 @@ export const CompanyForm = () => {
                             <FaUser className='absolute bottom-3 left-4 opacity-20' />
                         </div>
                         <div className="flex flex-col gap-2 relative">
-                            <label htmlFor="phoneNumber" className=" text-sm">
-                                {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
-                                    <p className=" text-red-600">{formik.errors.phoneNumber}</p>
+                            <label htmlFor="phone_number" className=" text-sm">
+                                {formik.touched.phone_number && formik.errors.phone_number ? (
+                                    <p className=" text-red-600">{formik.errors.phone_number}</p>
                                 ) : (
                                     'Telefono'
                                 )}
                             </label>
                             <input
-                                id="phoneNumber"
-                                name="phoneNumber"
+                                id="phone_number"
+                                name="phone_number"
                                 type="text"
                                 onChange={formik.handleChange}
-                                value={formik.values.phoneNumber}
+                                value={formik.values.phone_number}
                                 className='pl-10 w-full text-dark-gray bg-transparent border border-gray-500
                                  rounded-full py-[2px] h-10 focus:outline-none'
                             />
@@ -85,7 +107,7 @@ export const CompanyForm = () => {
                                 {formik.touched.address && formik.errors.address ? (
                                     <p className=" text-red-600">{formik.errors.address}</p>
                                 ) : (
-                                    'Dir'
+                                    'Dirección'
                                 )}
                             </label>
                             <input
