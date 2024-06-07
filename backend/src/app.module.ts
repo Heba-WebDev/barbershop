@@ -6,6 +6,7 @@ import { AppointmentModule } from './appointment/appointment.module'
 import { ScheduleModule } from './schedule/schedule.module'
 import { SeedModule } from './seed/seed.module'
 import { CompanyModule } from './company/company.module'
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { CompanyModule } from './company/company.module'
     AppointmentModule,
     ScheduleModule,
     ...process.env.NODE_ENV === 'development' ? [SeedModule] : [],
-    CompanyModule
+    CompanyModule,
+    CloudinaryModule
   ]
 })
 export class AppModule {}
