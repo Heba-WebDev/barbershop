@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   ServiceUnavailableException,
   UnauthorizedException
@@ -226,9 +225,11 @@ export class AuthService {
         where: { id }
       })
 
+      if (!user) throw new NotFoundException('User not exist')
+
       return user
     } catch (error) {
-      throw new InternalServerErrorException('Error in find by User UUID')
+      handleErrorExceptions(error)
     }
   }
 
