@@ -6,9 +6,9 @@ import { type ValidRole } from '../interfaces'
 import { RoleProtected } from './role-protected.decorator'
 import { UserRoleGuard } from '../guards/user-role.guard'
 
-export function Auth (role?: ValidRole) {
+export function Auth (...role: ValidRole[]) {
   return applyDecorators(
-    RoleProtected(role),
+    RoleProtected(...role),
     UseGuards(AuthGuard('jwt'), UserRoleGuard)
   )
 }
