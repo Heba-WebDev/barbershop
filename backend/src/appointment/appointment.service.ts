@@ -61,7 +61,6 @@ export class AppointmentService {
         employee: employee.user.name
       }
     } catch (error) {
-      console.log(error)
       handleErrorExceptions(error)
     }
   }
