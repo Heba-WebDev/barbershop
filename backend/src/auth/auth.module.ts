@@ -7,12 +7,11 @@ import { PrismaModule } from '../prisma/prisma.module'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtStrategy } from './strategies/jwt.strategy'
-
-import { CloudinaryProvider } from './claudinary.provider'
+import { CloudinaryModule } from '../cloudinary/cloudinary.module'
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, CloudinaryProvider],
+  providers: [AuthService, JwtStrategy],
   imports: [
     ConfigModule,
 
@@ -31,7 +30,8 @@ import { CloudinaryProvider } from './claudinary.provider'
       }
     }),
 
-    PrismaModule
+    PrismaModule,
+    CloudinaryModule
   ],
   exports: [AuthService, PassportModule]
 })

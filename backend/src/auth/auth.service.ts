@@ -10,18 +10,20 @@ import {
 import { compare, hash } from 'bcrypt'
 import { createTransport } from 'nodemailer'
 import { type UUID } from 'crypto'
-import { v2 as cloudinary } from 'cloudinary'
 import * as jwt from 'jsonwebtoken'
-import * as streamifier from 'streamifier'
 
 import { PrismaService } from '../prisma/prisma.service'
 import type { CreateUserDto, ForgotPasswordUserDto, LoginUserDto, ResetPassUserDto, UpdateUserDto } from './dto'
 import { type IJwtPayload, type User } from './interfaces'
 import { handleErrorExceptions } from '../common/utils'
+import { CloudinaryService } from '../cloudinary/cloudinary.service'
 
 @Injectable()
 export class AuthService {
-  constructor (private readonly prismaService: PrismaService) {}
+  constructor (
+    private readonly prismaService: PrismaService,
+    private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   async create (createAuthDto: CreateUserDto) {
     const { email, password, name, phoneNumber } = createAuthDto
@@ -79,70 +81,35 @@ export class AuthService {
     }
   }
 
-  async update (
-    id: string,
-    data: UpdateUserDto
-  ): Promise<{
-      name: string
-      email: string
-      phone_number: string
-    }> {
+  async update (id: string, data: UpdateUserDto) {
     const user = await this.prismaService.user.findUnique({ where: { id } })
 
-    if (!user) throw new NotFoundException("User doesn't exist")
+    if (!user) throw new NotFoundException('User dont exist')
     if (!user.is_active) throw new UnauthorizedException('User is inactive')
     if (!user.is_verified) throw new UnauthorizedException('Unveried user')
 
     return await this.prismaService.user.update({
-      where: {
-        id
-      },
+      where: { id },
       data,
-      select: {
-        name: true,
-        email: true,
-        phone_number: true,
-        is_active: true,
-        is_verified: true
-      }
+      select: { name: true, email: true, phone_number: true, avatar: true, role: true }
     })
   }
 
-  async updateAvatar (
-    id: string,
-    file: Express.Multer.File
-  ) {
-    const user = await this.prismaService.user.findUnique({ where: { id } })
+  async updateUserAvatar (userId: string, file: Express.Multer.File) {
+    const user = await this.prismaService.user.findUnique({ where: { id: userId } })
 
     if (!user) throw new NotFoundException("User doesn't exist")
     if (!user.is_active) throw new UnauthorizedException('User is inactive')
     if (!user.is_verified) throw new UnauthorizedException('Unverified user')
 
     if (user.avatar) {
-      const currentAvatar = user.avatar.split('/')[7].split('.')[0]
-      await cloudinary.uploader.destroy(currentAvatar)
+      const imageId = user.avatar.split('/').at(-1).split('.').at(0)
+      await this.cloudinaryService.deleteFile(imageId, 'users')
     }
 
-    const uploadResult = await new Promise<string>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        (error, result) => {
-          if (error) reject(error)
-          else resolve(result.secure_url)
-        }
-      )
+    const { secure_url: secureUrl } = await this.cloudinaryService.uploadImageFile(file, 'users')
 
-      streamifier.createReadStream(file.buffer).pipe(uploadStream)
-    })
-
-    return await this.prismaService.user.update({
-      where: {
-        id
-      },
-      data: { avatar: uploadResult },
-      select: {
-        avatar: true
-      }
-    })
+    return { avatar: secureUrl }
   }
 
   async forgotPassword (email: ForgotPasswordUserDto) {
