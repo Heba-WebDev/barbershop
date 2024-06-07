@@ -1,6 +1,7 @@
 export interface IRegisterCompany {
   name: string;
-  phoneNumber: string;
+  phone_number: string;
   address: string;
   avatar: File | null;
+  
 }
