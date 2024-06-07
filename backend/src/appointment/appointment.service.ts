@@ -1,48 +1,67 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { type CreateAppointmentDto } from './dto/create-appointment.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
 import { AuthService } from '../auth/auth.service'
 import { ServiceService } from '../service/service.service'
 import { handleErrorExceptions } from '../common/utils'
+import { CompanyService } from '../company/company.service'
+import { type User } from '../auth/interfaces'
 
 @Injectable()
 export class AppointmentService {
   constructor (
     private readonly prisma: PrismaService,
     private readonly authService: AuthService,
-    private readonly serviceService: ServiceService
+    private readonly serviceService: ServiceService,
+    private readonly companyService: CompanyService
   ) {}
 
-  async create (createAppointmentDto: CreateAppointmentDto) {
-    const { startDate, services, ...data } = createAppointmentDto
-    const dateTime = new Date(startDate)
-
-    const date = dateTime.toISOString().split('T')[0]
-
-    //! llamar desde sus respectivos modulos
-    const existEmployee = await this.findEmployeeByUUID(createAppointmentDto.employee_id)
-    const existUser = await this.authService.findUserByUUID(createAppointmentDto.user_id)
-
-    await Promise.all(createAppointmentDto.services.map(async service => {
-      const serviceFound = await this.serviceService.findServiceUUID(service)
-      if (!serviceFound) throw new NotFoundException(`${service} Service not found`)
-    }))
-
-    if (!existEmployee) throw new NotFoundException('Employee not exist')
-    if (!existUser) throw new NotFoundException('User not exist')
-
+  async create (createAppointmentDto: CreateAppointmentDto, user: User) {
     try {
-      const appointment = await this.prisma.appointment.create({
+      const { startDate, services, employeeID, ...data } = createAppointmentDto
+      const dateTime = new Date(startDate)
+
+      const date = dateTime.toISOString().split('T')[0]
+
+      await this.companyService.findEmployeeByUserUUID(createAppointmentDto.employeeID)
+
+      let total = 0
+      const servicePromise = createAppointmentDto.services.map(async service => {
+        const serviceFound = await this.serviceService.findServiceUUID(service)
+        return serviceFound.price
+      })
+
+      const prices = await Promise.all(servicePromise)
+      total = prices.reduce((acc, price) => acc + price, 0)
+
+      const { employee, ...rest } = await this.prisma.appointment.create({
         data: {
           start_date: new Date(date),
           start_time: new Date(startDate),
+          employee_id: employeeID,
+          user_id: user.id,
+          total,
           ...data
+        },
+        select: {
+          id: true,
+          start_date: true,
+          start_time: true,
+          state: true,
+          total: true,
+          employee: { select: { user: { select: { name: true } } } }
         }
       })
 
-      return await this.createserviceForAppointment(services, appointment.id as UUID)
+      await this.createserviceForAppointment(services, rest.id as UUID)
+
+      return {
+        ...rest,
+        employee: employee.user.name
+      }
     } catch (error) {
+      console.log(error)
       handleErrorExceptions(error)
     }
   }
@@ -56,17 +75,6 @@ export class AppointmentService {
     try {
       return await this.prisma.serviceAppointment.createMany({
         data: serviceFormated
-      })
-    } catch (error) {
-      handleErrorExceptions(error)
-    }
-  }
-
-  //! move to module Employee
-  async findEmployeeByUUID (id: UUID) {
-    try {
-      return await this.prisma.employeeCompany.findUnique({
-        where: { id }
       })
     } catch (error) {
       handleErrorExceptions(error)
