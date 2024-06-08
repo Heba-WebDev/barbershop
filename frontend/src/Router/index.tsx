@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { RegisterView, ServicesView, HoursView, HomeView, LoginView, ProfileView, CompanyView } from '../pages'
 import { MainLayout } from '@/layouts/mainLayout'
+import { MyReservationsView } from '@/pages/myreservations/MyReservations'
+import { NewReservationView } from '@/pages/newReservation/newReservationView'
 
 const router = createBrowserRouter([
     {
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
                 path: '/company',
                 element: <CompanyView />,
             },
+            {
+                path:'/reservations',
+                element: <MyReservationsView />
+            },
+            {
+                path:'/new-reservation',
+                element: <NewReservationView />
+            }
         ],
     },
 ])
