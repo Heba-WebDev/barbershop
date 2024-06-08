@@ -1,11 +1,36 @@
 import axios from 'axios'
 import { CustomError } from '@/axios/customError'
-import { IAddService } from '../types'
 import { api } from '@/axios'
+import { IAddService } from '../types'
 
-export const addServiceApi = async (data: IAddService) => {
+export const createServiceApi = async (data: IAddService, token: string) => {
     try {
-        const response = await api.post('/api/service', data)
+        const response = await api.post('/api/service', data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        if (response.status >= 200 && response.status < 300) {
+            return response.data
+        } else {
+            throw new CustomError(response)
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error) && error?.response) {
+            throw new CustomError(error.response)
+        } else {
+            throw error
+        }
+    }
+}
+
+export const fetchServicsApi = async (token: string) => {
+    try {
+        const response = await api.get('/api/service', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
         if (response.status >= 200 && response.status < 300) {
             return response.data
         } else {
