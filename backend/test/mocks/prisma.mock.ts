@@ -16,7 +16,8 @@ export const mockPrisma = {
   employeeCompany: {
     findUnique: jest.fn(),
     create: jest.fn(),
-    findFirst: jest.fn()
+    findFirst: jest.fn(),
+    findMany: jest.fn()
   },
   serviceAppointment: {
     createMany: jest.fn()
