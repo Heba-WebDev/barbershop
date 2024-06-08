@@ -1,4 +1,4 @@
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMmFmYzc2LTg1ZjAtNDRjYi1iZGJlLTY0NTJkYTMwZGUzZiIsImlhdCI6MTcxNjg2MjU4NywiZXhwIjoxNzE2ODY2MTg3fQ.3iHjx-iJgot7eW71UGYG8Ql1F9hN-rzXWCtT9AVL_Hc
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNhNDI5YmFlLTBlOTgtNDBlOC04N2UyLTRjNzQ5N2YyODdlZCIsImlhdCI6MTcxNzg4MjM3MiwiZXhwIjoxNzE3ODg1OTcyfQ.RO08WWf2K6UrWi_5n_TcIi6fiPgbkNAp_5msr2GUKag
 POST http://localhost:3000/api/company
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -8,3 +8,10 @@ Authorization: Bearer {{token}}
   "name": "Barber Simulator",
   "phone_number": "+569"
 }
+###
+GET http://localhost:3000/api/company
+Authorization: Bearer {{token}}
+
+###
+GET http://localhost:3000/api/company/employees/40685179-7e5d-473c-acd2-f72b3a87e643
+Authorization: Bearer {{token}}
