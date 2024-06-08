@@ -9,6 +9,7 @@ import { type User } from '../auth/interfaces'
 import { validate } from 'class-validator'
 import { AuthService } from '../auth/auth.service'
 import { type UUID } from 'crypto'
+import { CloudinaryService } from '../cloudinary/cloudinary.service'
 
 describe('CompanyService', () => {
   let companyService: CompanyService
@@ -35,6 +36,10 @@ describe('CompanyService', () => {
       providers: [
         CompanyService,
         AuthService,
+        {
+          provide: CloudinaryService,
+          useValue: { uploadImageFile: jest.fn(), deleteFile: jest.fn() }
+        },
         {
           provide: PrismaService,
           useValue: mockPrisma

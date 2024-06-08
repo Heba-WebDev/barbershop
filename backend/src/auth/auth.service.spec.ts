@@ -16,6 +16,7 @@ import { Readable } from 'stream'
 import { mockPrisma, mockUser } from '../../test/mocks'
 import { AuthController } from './auth.controller'
 import { type UUID } from 'crypto'
+import { CloudinaryService } from '../../src/cloudinary/cloudinary.service'
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword')
@@ -38,6 +39,10 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         {
+          provide: CloudinaryService,
+          useValue: { uploadImage: jest.fn(), FiledeleteFile: jest.fn() }
+        },
+        {
           provide: PrismaService,
           useValue: mockPrisma
         }
@@ -59,12 +64,12 @@ describe('AuthService', () => {
       const { user } = await authService.create(mockUser)
 
       expect(mockPrisma.user.create).toHaveBeenCalledTimes(1)
-      expect(user).toMatchObject({
+      expect(user).toEqual({
         id: expect.any(String),
         name: mockUser.name,
         email: mockUser.email,
         phoneNumber: mockUser.phoneNumber,
-        role: 'CLIENT'
+        role: ['CLIENT']
       })
 
       expect(user).not.toHaveProperty('password')
@@ -191,11 +196,11 @@ describe('AuthService', () => {
       })
 
       // se usa spyOn para simular el servicio de cloudinary en Ok
-      jest.spyOn(authService, 'updateAvatar').mockResolvedValue({
+      jest.spyOn(authService, 'updateUserAvatar').mockResolvedValue({
         avatar: mockAvatar.avatar
       })
 
-      await expect(authService.updateAvatar(mockId, mockFile)).resolves.toEqual(
+      await expect(authService.updateUserAvatar(mockId, mockFile)).resolves.toEqual(
         {
           avatar: mockAvatar.avatar
         }
@@ -204,12 +209,12 @@ describe('AuthService', () => {
 
     it('should fail to upload the user avatar', async () => {
       // se usa spyOn para simular el servicio de cloudinary en fallo
-      jest.spyOn(authService, 'updateAvatar').mockImplementation(() => {
+      jest.spyOn(authService, 'updateUserAvatar').mockImplementation(() => {
         throw new Error('Failed to upload file')
       })
 
       try {
-        await authService.updateAvatar(mockId, mockFile)
+        await authService.updateUserAvatar(mockId, mockFile)
         expect(true).toBe(false)
       } catch (error) {
         expect(error.message).toBe('Failed to upload file')
@@ -218,7 +223,7 @@ describe('AuthService', () => {
 
     it('should throw notFoundExpection whe the user not exist', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(undefined)
-      await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
+      await expect(authService.updateUserAvatar(mockId, mockFile)).rejects.toThrow(
         NotFoundException
       )
     })
@@ -227,7 +232,7 @@ describe('AuthService', () => {
       const inactiveUser = { ...mockUser, is_verified: false }
       mockPrisma.user.findUnique.mockResolvedValue(inactiveUser)
 
-      await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
+      await expect(authService.updateUserAvatar(mockId, mockFile)).rejects.toThrow(
         UnauthorizedException
       )
     })
@@ -236,7 +241,7 @@ describe('AuthService', () => {
       const unveriedUser = { ...mockUser, is_verified: false }
       mockPrisma.user.findUnique.mockResolvedValue(unveriedUser)
 
-      await expect(authService.updateAvatar(mockId, mockFile)).rejects.toThrow(
+      await expect(authService.updateUserAvatar(mockId, mockFile)).rejects.toThrow(
         UnauthorizedException
       )
     })
@@ -264,14 +269,14 @@ describe('AuthService', () => {
     it('Should return new role user', async () => {
       mockPrisma.user.update.mockResolvedValue({
         ...newMockUser,
-        role: 'OWNER'
+        role: ['OWNER']
       })
 
       const result = await authService.changeRole(newMockUser.id as UUID)
 
       expect(result).toEqual({
         ...newMockUser,
-        role: 'OWNER'
+        role: ['OWNER']
       })
     })
   })

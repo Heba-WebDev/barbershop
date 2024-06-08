@@ -38,4 +38,13 @@ export class UpdateUserDto {
   @MaxLength(15)
   @IsOptional()
   readonly phone_number?: string
+
+  @ApiProperty({
+    example: 'https://res.cloudinary.com/dvzycdk7y/image/upload/v1717788840/users/fsdfsdfsdfsds.gif',
+    description: 'User - image url',
+    nullable: true
+  })
+  @IsString()
+  @IsOptional()
+  readonly avatar?: string
 }

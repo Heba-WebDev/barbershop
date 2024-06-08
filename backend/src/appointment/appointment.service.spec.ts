@@ -44,9 +44,12 @@ describe('AppointmentService', () => {
       controllers: [AppointmentController],
       providers: [
         AppointmentService,
-        AuthService,
         ServiceService,
         CompanyService,
+        {
+          provide: AuthService,
+          useValue: jest.fn()
+        },
         {
           provide: PrismaService,
           useValue: mockPrisma

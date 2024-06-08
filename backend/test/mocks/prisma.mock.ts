@@ -5,7 +5,7 @@ export const mockPrisma = {
     create: jest.fn().mockImplementation((dto) => ({
       ...dto,
       id: randomUUID(),
-      role: 'CLIENT'
+      role: ['CLIENT']
     })),
     findUnique: jest.fn(),
     update: jest.fn().mockResolvedValue({}) // Mock the update method
