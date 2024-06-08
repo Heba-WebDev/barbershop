@@ -39,6 +39,12 @@ export const ProfileView = () => {
                         <Button className=' bg-transparent hover:bg-transparent'><Link to='/company' className='underline'>Ser propietario</Link></Button>
                     </div>
                 </>}
+                {user?.role !== 'CLIENT' && <>
+                    <div className='p-1 rounded-lg flex w-42 items-center'>
+                        <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaBusinessTime className='opacity-50'/></span>
+                        <Button className=' bg-transparent hover:bg-transparent'><Link to='/services' className='underline'>Servicios</Link></Button>
+                    </div>
+                </>}
                 <div className='p-1 rounded-lg flex w-42 items-center'>
                     <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaSignOutAlt className='opacity-50'/></span>
                     <Button onClick={handleLogOut} className=' bg-transparent hover:bg-transparent'>Cerrar sesión</Button>
