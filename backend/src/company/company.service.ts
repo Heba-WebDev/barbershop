@@ -110,4 +110,18 @@ export class CompanyService {
       handleErrorExceptions(error)
     }
   }
+
+  async getAllEmployee (companyID: UUID) {
+    try {
+      return await this.prisma.employeeCompany.findMany({
+        where: { company_id: companyID },
+        select: {
+          id: true,
+          user: { select: { name: true } }
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
 }
