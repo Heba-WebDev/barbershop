@@ -122,4 +122,14 @@ describe('CompanyService', () => {
       await expect(companyService.companyExist(newMockUser.id as UUID)).rejects.toThrow('Company Exist')
     })
   })
+
+  describe('Find employee for UUID', () => {
+    it('Should return employee', async () => {
+      mockPrisma.employeeCompany.findFirst.mockResolvedValue({ ...newMockEmployee })
+
+      const result = await companyService.findEmployeeByUserUUID(newMockEmployee.id as UUID)
+
+      expect(result).toEqual({ ...newMockEmployee })
+    })
+  })
 })
