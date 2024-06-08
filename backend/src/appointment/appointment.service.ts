@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { type CreateAppointmentDto } from './dto/create-appointment.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
-import { AuthService } from '../auth/auth.service'
 import { ServiceService } from '../service/service.service'
 import { handleErrorExceptions } from '../common/utils'
 import { CompanyService } from '../company/company.service'
@@ -12,7 +11,6 @@ import { type User } from '../auth/interfaces'
 export class AppointmentService {
   constructor (
     private readonly prisma: PrismaService,
-    private readonly authService: AuthService,
     private readonly serviceService: ServiceService,
     private readonly companyService: CompanyService
   ) {}
