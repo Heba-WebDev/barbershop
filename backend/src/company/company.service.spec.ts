@@ -29,6 +29,21 @@ describe('CompanyService', () => {
     company_id: 'random'
   }
 
+  const newMockAllEmployee = [
+    {
+      id: '2b045863-73a0-454f-8b9a-3b22edaf5812',
+      user: {
+        name: 'Josephine Yost'
+      }
+    },
+    {
+      id: 'effddf71-e239-427f-b14a-e0a7f98b0f2b',
+      user: {
+        name: 'Carroll Wilderman'
+      }
+    }
+  ]
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CompanyController],
@@ -130,6 +145,18 @@ describe('CompanyService', () => {
       const result = await companyService.findEmployeeByUserUUID(newMockEmployee.id as UUID)
 
       expect(result).toEqual({ ...newMockEmployee })
+    })
+  })
+
+  describe('Find All employee', () => {
+    it('Should return all employees company', async () => {
+      mockPrisma.employeeCompany.findMany.mockResolvedValue({
+        ...newMockAllEmployee
+      })
+
+      const result = await companyService.getAllEmployee('40685179-7e5d-473c-acd2-f72b3a87e643')
+
+      expect(result).toEqual({ ...newMockAllEmployee })
     })
   })
 })
