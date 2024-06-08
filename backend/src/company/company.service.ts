@@ -124,4 +124,14 @@ export class CompanyService {
       handleErrorExceptions(error)
     }
   }
+
+  async getAllCompanys () {
+    try {
+      return await this.prisma.company.findMany({
+        where: { is_active: true }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
 }

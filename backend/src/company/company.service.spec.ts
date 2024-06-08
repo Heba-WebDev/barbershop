@@ -44,6 +44,27 @@ describe('CompanyService', () => {
     }
   ]
 
+  const newMockAllCompany = [
+    {
+      id: '780a56ee-cb14-4515-a793-50aa954c7490',
+      name: 'Abbott - Batz',
+      phone_number: '435924622',
+      address: '13619 Boyer Valley',
+      is_active: true,
+      avatar: 'null',
+      user_id: 'ca429bae-0e98-40e8-87e2-4c7497f287ed'
+    },
+    {
+      id: '40685179-7e5d-473c-acd2-f72b3a87e643',
+      name: 'Dare Inc',
+      phone_number: '540824085',
+      address: '25290 Bluebell Close',
+      is_active: true,
+      avatar: 'null',
+      user_id: 'a09f10f7-ba22-4748-bc15-c266a34d6947'
+    }
+  ]
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CompanyController],
@@ -157,6 +178,16 @@ describe('CompanyService', () => {
       const result = await companyService.getAllEmployee('40685179-7e5d-473c-acd2-f72b3a87e643')
 
       expect(result).toEqual({ ...newMockAllEmployee })
+    })
+  })
+
+  describe('Find ALl Companys', () => {
+    it('Should return all companys', async () => {
+      mockPrisma.company.findMany.mockResolvedValue({ ...newMockAllCompany })
+
+      const result = await companyService.getAllCompanys()
+
+      expect(result).toEqual({ ...newMockAllCompany })
     })
   })
 })

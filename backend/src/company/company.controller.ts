@@ -16,6 +16,17 @@ export class CompanyController {
     description:
     'This endpoint needs a bearear token to extract the user from the request'
   })
+  @Get()
+  @Auth('CLIENT', 'EMPLOYEE', 'OWNER')
+  async getALl () {
+    return await this.companyService.getAllCompanys()
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+    'This endpoint needs a bearear token to extract the user from the request'
+  })
   @Get('employees/:id')
   @Auth('CLIENT', 'EMPLOYEE', 'OWNER')
   async getAllEmployee (@Param('id', ParseUUIDPipe) companyID: UUID) {

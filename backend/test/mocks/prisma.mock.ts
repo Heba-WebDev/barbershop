@@ -30,7 +30,8 @@ export const mockPrisma = {
   },
   company: {
     findFirst: jest.fn(),
-    create: jest.fn()
+    create: jest.fn(),
+    findMany: jest.fn()
   },
   schedule: {
     findUnique: jest.fn(),
