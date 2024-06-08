@@ -96,7 +96,7 @@ export const RegisterView = () => {
                                 <FaLock className='absolute bottom-3 left-4 opacity-20'/>
                                 <input
                                     name='password'
-                                    type='passwor'
+                                    type='password'
                                     placeholder='Escribe tu contraseña'
                                     onChange={formik.handleChange}
                                     value={formik.values.password}
