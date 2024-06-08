@@ -10,6 +10,7 @@ import { type UUID } from 'crypto'
 import { type UpdateServiceDto } from './dto/update-service.dto'
 import { AuthService } from '../auth/auth.service'
 import { CompanyService } from '../company/company.service'
+import { CloudinaryService } from '../cloudinary/cloudinary.service'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -59,6 +60,10 @@ describe('ServiceService', () => {
         ServiceService,
         AuthService,
         CompanyService,
+        {
+          provide: CloudinaryService,
+          useValue: { uploadImageFile: jest.fn(), deleteFile: jest.fn() }
+        },
         {
           provide: PrismaService,
           useValue: mockPrisma
