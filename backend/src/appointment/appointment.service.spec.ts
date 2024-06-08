@@ -113,7 +113,7 @@ describe('AppointmentService', () => {
         count: '1'
       })
 
-      const result = await appointmentService.createserviceForAppointment(newMockService, 'randomUUID' as UUID)
+      const result = await appointmentService.createServiceForAppointment(newMockService, 'randomUUID' as UUID)
 
       expect(result).toEqual({
         count: '1'

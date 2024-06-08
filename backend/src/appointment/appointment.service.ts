@@ -52,7 +52,7 @@ export class AppointmentService {
         }
       })
 
-      await this.createserviceForAppointment(services, rest.id as UUID)
+      await this.createServiceForAppointment(services, rest.id as UUID)
 
       return {
         ...rest,
@@ -63,7 +63,7 @@ export class AppointmentService {
     }
   }
 
-  async createserviceForAppointment (services: UUID[], appointmentID: UUID) {
+  async createServiceForAppointment (services: UUID[], appointmentID: UUID) {
     const serviceFormated = services.map(service => ({
       appointment_id: appointmentID,
       service_id: service
