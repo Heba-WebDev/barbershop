@@ -1,13 +1,17 @@
 
 export interface service {
-    id: string;
     name : string;
-    is_active: boolean;
+    avatar: string;
     price: number;
-    company_id: string;
 }
 
 export interface IAddService {
     name: string;
+    price: number;
+}
+
+export interface Services {
+    name: string;
     price: string;
+    avatar: string;
 }

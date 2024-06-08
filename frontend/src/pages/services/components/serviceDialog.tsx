@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -11,20 +12,40 @@ import {
 import { Formik, Form } from 'formik'
 import { addServiceValidationSchema } from '../schema'
 import { FaUser } from 'react-icons/fa'
-import { IAddService } from '../types'
+import { IAddService, Services } from '../types'
+import { userState } from '@/state/user'
+import { toast } from 'react-toastify'
+import { createServiceApi, fetchServicsApi } from '../api'
 
 export function ServiceDialog() {
+    const serviceList = userState((state) => state.service)
+    const setService = userState((state) => state.setService)
+    const [open, setOpen] = useState(false)
     const initialValues = {
         name: '',
-        price: '',
+        price: 0,
     }
+    const token = userState((state) => state.token)
     const handleSubmit = async(values: IAddService) => {
-        console.log('HERE')
-        console.log(values)
+        try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const num = parseFloat(values.price)
+            await createServiceApi({name: values.name, price: num }, token as string)
+            const res = await fetchServicsApi(token as string)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const newList = (_prevServceList: Services[]) =>
+              [...res] as Services[]
+            setService(newList(serviceList as Services[]))
+            toast.success(`${values.name} ha sido registrado como servicio`)
+            setOpen(false)
+        } catch (error: unknown) {
+            if(error instanceof Error) toast.error(error.message)
+        }
     }
     return (
         <div>
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     <Button
                         className='w-full h-12 bg-secondary-purple text-light-cayn mt-2 text-xl
