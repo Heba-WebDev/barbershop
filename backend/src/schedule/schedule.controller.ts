@@ -4,12 +4,21 @@ import { ApiTags } from '@nestjs/swagger'
 import { ScheduleService } from './schedule.service'
 import { Auth, GetUser } from '../auth/decorators'
 import { User } from '../auth/interfaces'
-import { QueryParamsScheduleDto, UpdateScheduleDto } from './dto'
+import { GetAvailableHoursDto, QueryParamsScheduleDto, UpdateScheduleDto } from './dto'
 
 @ApiTags('Schedule')
 @Controller('schedule')
 export class ScheduleController {
   constructor (private readonly scheduleService: ScheduleService) { }
+
+  @Get('/available-hours/:companyId/:date')
+  async findAvailableHours (
+  @Param() getAvailableHoursDto: GetAvailableHoursDto
+  ) {
+    const { companyId, date } = getAvailableHoursDto
+    const secureDate = new Date(date)
+    return await this.scheduleService.findAvailableHours(companyId, secureDate)
+  }
 
   @Get(':companyId')
   async findAllByCompanyId (

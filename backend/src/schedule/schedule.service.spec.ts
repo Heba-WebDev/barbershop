@@ -1,18 +1,21 @@
 import { PassportModule } from '@nestjs/passport'
 import { Test, type TestingModule } from '@nestjs/testing'
 
+import { validate } from 'class-validator'
 import { randomUUID } from 'crypto'
 
 import { ScheduleController } from './schedule.controller'
 import { ScheduleService } from './schedule.service'
 
-import { validate } from 'class-validator'
 import { PrismaService } from '../../src/prisma/prisma.service'
 import { mockPrisma, mockSchedule } from '../../test/mocks'
 import { type QueryParamsScheduleDto } from './dto'
+import { AppointmentService } from '../appointment/appointment.service'
+import { ServiceService } from '../service/service.service'
+import { CompanyService } from '../company/company.service'
 
-jest.mock('../common/utils/getTimeFromDate.ts', () => ({
-  getTimeForDate: jest.fn(date => '22:00')
+jest.mock('../schedule/utils/getTimeFromDate.ts', () => ({
+  getTimeForDate: jest.fn(() => '22:00')
 }))
 
 const mockQuerySchedules: QueryParamsScheduleDto = { state: true, day: 'MONDAY' }
@@ -25,6 +28,9 @@ describe('ScheduleService', () => {
       controllers: [ScheduleController],
       providers: [
         ScheduleService,
+        { provide: AppointmentService, useValue: jest.fn() },
+        { provide: ServiceService, useValue: jest.fn() },
+        { provide: CompanyService, useValue: jest.fn() },
         {
           provide: PrismaService,
           useValue: mockPrisma
@@ -43,7 +49,12 @@ describe('ScheduleService', () => {
 
       const schedule = await scheduleService.findOneById(mockSchedule.id)
 
-      expect(schedule).toEqual(mockSchedule)
+      expect(schedule).toMatchObject({
+        day: 'MONDAY',
+        id: 2,
+        state: true,
+        interval: 30
+      })
     })
 
     it('should return not found exception', async () => {

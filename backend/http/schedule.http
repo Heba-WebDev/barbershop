@@ -6,10 +6,15 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "initial_start_date": "1970-01-01T01:00:00Z",
+  "initial_start_date": "1970-01-02T01:00:00Z",
   "interval": 60
 }
 ###
+
 GET http://localhost:3000/api/schedule/122bff6c-7b6c-481e-aceb-47a43ebd8b8f
+Content-Type: application/json
+###
+
+GET http://localhost:3000/api/schedule/available-hours/d6cac3a7-a629-4805-b784-83f346655229/1970-01-02T13:00:00
 Content-Type: application/json
 ###

@@ -1,0 +1,5 @@
+export * from './getDateWithTime'
+export * from './getTimeFromDate'
+export * from './getHoursWithInterval'
+export * from './getFormatedHours'
+export * from './getNameDay'
