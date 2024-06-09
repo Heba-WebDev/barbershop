@@ -1,5 +1,5 @@
 import { FileInterceptor } from '@nestjs/platform-express'
-import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, Patch, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, Patch, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { EmailService } from '../email/email.service'
@@ -10,8 +10,8 @@ import { ForgotPasswordUserDto } from './dto/forgot-password.dto'
 import { LoginUserDto } from './dto/login-user.dto'
 import { ResetPassUserDto } from './dto/reset-password.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { JWTAuthGuard } from './guards/reset-password.guard'
 import { User } from './interfaces'
+import { ConfirmEmailDto } from './dto'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -83,16 +83,17 @@ export class AuthController {
   }
 
   @Patch('reset-password')
-  @UseGuards(JWTAuthGuard)
-  async resetPassword (
-  @Req() req: Request,
-    @Body() resetPass: ResetPassUserDto
-  ) {
+  @Auth()
+  async resetPassword (@Body() resetPass: ResetPassUserDto) {
     return await this.authService.resetPassword(resetPass)
   }
 
-  @Get('confirm-email')
-  async confirmEmailUser (@Query('token') token: string) {
+  @Patch('confirm-email')
+  async confirmEmailUser (
+  @Body() confirmEmailDto: ConfirmEmailDto
+  ) {
+    const { token } = confirmEmailDto
+
     return await this.authService.confirmEmail(token)
   }
 }
