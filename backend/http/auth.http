@@ -27,5 +27,19 @@ GET http://localhost:3000/api/auth/renew
 Authorization: Bearer {{token}}
 ###
 
-GET http://localhost:3000/api/auth/confirm-email?token={{emailToken}}
+PATCH http://localhost:3000/api/auth/confirm-email
+Content-Type: application/json
+
+{
+  "token": "{{emailToken}}"
+}
+###
+
+POST http://localhost:3000/api/auth/forgot-password
+Content-Type: application/json
+# Authorization: Bearer {{token}}
+
+{
+  "email": "yebivip903@lapeds.com"
+}
 
