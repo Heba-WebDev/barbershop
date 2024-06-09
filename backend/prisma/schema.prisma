@@ -41,8 +41,9 @@ model User {
   email        String   @unique
   password     String
   phone_number String?
-  is_active    Boolean  @default(false)
+  is_active    Boolean  @default(true)
   is_verified  Boolean  @default(false)
+  email_token  String?
   avatar       String?
   role         Role[]     @default([CLIENT])
   created_at   DateTime @default(now())

@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { CloudinaryModule } from '../cloudinary/cloudinary.module'
+import { EmailModule } from 'src/email/email.module'
 
 @Module({
   controllers: [AuthController],
@@ -31,7 +32,8 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module'
     }),
 
     PrismaModule,
-    CloudinaryModule
+    CloudinaryModule,
+    EmailModule
   ],
   exports: [AuthService, PassportModule]
 })

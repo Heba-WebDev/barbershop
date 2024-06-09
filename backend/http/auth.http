@@ -1,12 +1,14 @@
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMmFmYzc2LTg1ZjAtNDRjYi1iZGJlLTY0NTJkYTMwZGUzZiIsImlhdCI6MTcxNjg2MjU4NywiZXhwIjoxNzE2ODY2MTg3fQ.3iHjx-iJgot7eW71UGYG8Ql1F9hN-rzXWCtT9AVL_Hc
 
+@emailToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA1NTQ1Njk3LWM2YWItNDBhZi04YzI3LTY5NTJmYTU3YjMzNiIsImlhdCI6MTcxNzkxMjQzNiwiZXhwIjoxNzE3OTE2MDM2fQ.8JGvLcH0s1Px-PFiWWdm399BQh-zQpalZe_he1blMjQ
+
 ###
 POST http://localhost:3000/api/auth/new-account
 Content-Type: application/json
 
 {
   "name": "Gabriel",
-  "email": "test2@gmail.com",
+  "email": "paxofaw184@noefa.com",
   "password": "qqqqqq7T",
   "phoneNumber": "+569 87264971"  
 }
@@ -23,3 +25,21 @@ Content-Type: application/json
 
 GET http://localhost:3000/api/auth/renew
 Authorization: Bearer {{token}}
+###
+
+PATCH http://localhost:3000/api/auth/confirm-email
+Content-Type: application/json
+
+{
+  "token": "{{emailToken}}"
+}
+###
+
+POST http://localhost:3000/api/auth/forgot-password
+Content-Type: application/json
+# Authorization: Bearer {{token}}
+
+{
+  "email": "yebivip903@lapeds.com"
+}
+
