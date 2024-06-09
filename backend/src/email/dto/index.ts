@@ -1,1 +1,1 @@
-export * from './send-user-confirmation.dto'
+export * from './email-confirmation.dto'
