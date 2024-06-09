@@ -1,9 +1,11 @@
+/* eslint-disable indent */
+/* eslint-disable quotes */
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { TbCircleNumber1Filled, TbCircleNumber2Filled, TbCircleNumber3Filled, TbCircleNumber4Filled } from "react-icons/tb";
-import { RxCaretSort } from "react-icons/rx";
+import { TbCircleNumber1Filled, TbCircleNumber2Filled, TbCircleNumber3Filled, TbCircleNumber4Filled } from "react-icons/tb"
+import { RxCaretSort } from "react-icons/rx"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -86,16 +88,16 @@ const products=[
 
 export const NewReservationView = () => {
 
-    const [searchParams]=useSearchParams();
-    const navigate=useNavigate();
+    const [searchParams]=useSearchParams()
+    const navigate=useNavigate()
 
     const barbershop=searchParams.get('barbershop')
 
     const [date, setDate] = React.useState<Date | undefined>()
 
-    const [hour, setHour]=useState<string>();
-    const [servicioID,setServicioID]=useState<number>();
-    const [open, setOpen] = React.useState(false);  
+    const [hour, setHour]=useState<string>()
+    const [servicioID,setServicioID]=useState<number>()
+    const [open, setOpen] = React.useState(false)
 
     const serviceObj=servicios.find((item)=>{
         return item.id.toString()===barbershop
@@ -103,9 +105,9 @@ export const NewReservationView = () => {
 
     useEffect(() => {
         if (!barbershop) {
-          navigate('/');
+        //   navigate('/')
         }
-      }, [barbershop, navigate]);
+      }, [barbershop, navigate])
 
   return (
     <div className="pb-24">      
@@ -135,7 +137,7 @@ export const NewReservationView = () => {
         </section>
         
            
-        {date && (
+        {/*date && */(
                     <section className="px-5">
                         <p className="flex items-center justify-center lg:justify-start mt-10 lg:mt-0 mb-5"><TbCircleNumber2Filled size={30} className="mr-2 text-purple-200" />
                                 Seleccione las horas disponibles:</p>
@@ -157,7 +159,7 @@ export const NewReservationView = () => {
                         </div>
 
                     {
-                        hour &&(
+                       /* hour &&*/(
                             <div className="my-10 flex flex-col items-center lg:items-start">
                                 <p className="flex items-center justify-center lg:justify-start  lg:mt-0 mb-5">
                                     <TbCircleNumber4Filled size={30} className="mr-2 text-purple-200"/>
