@@ -10,6 +10,7 @@ import { validate } from 'class-validator'
 import { AuthService } from '../auth/auth.service'
 import { type UUID } from 'crypto'
 import { CloudinaryService } from '../cloudinary/cloudinary.service'
+import { EmailService } from '../email/email.service'
 
 describe('CompanyService', () => {
   let companyService: CompanyService
@@ -75,6 +76,10 @@ describe('CompanyService', () => {
         {
           provide: CloudinaryService,
           useValue: { uploadImageFile: jest.fn(), deleteFile: jest.fn() }
+        },
+        {
+          provide: EmailService,
+          useValue: jest.fn()
         },
         {
           provide: PrismaService,

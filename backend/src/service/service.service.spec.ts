@@ -11,6 +11,7 @@ import { type UpdateServiceDto } from './dto/update-service.dto'
 import { AuthService } from '../auth/auth.service'
 import { CompanyService } from '../company/company.service'
 import { CloudinaryService } from '../cloudinary/cloudinary.service'
+import { EmailService } from '../email/email.service'
 
 describe('ServiceService', () => {
   let service: ServiceService
@@ -63,6 +64,10 @@ describe('ServiceService', () => {
         {
           provide: CloudinaryService,
           useValue: { uploadImageFile: jest.fn(), deleteFile: jest.fn() }
+        },
+        {
+          provide: EmailService,
+          useValue: jest.fn()
         },
         {
           provide: PrismaService,

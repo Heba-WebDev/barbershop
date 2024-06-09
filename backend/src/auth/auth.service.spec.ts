@@ -17,9 +17,15 @@ import { mockPrisma, mockUser } from '../../test/mocks'
 import { AuthController } from './auth.controller'
 import { type UUID } from 'crypto'
 import { CloudinaryService } from '../../src/cloudinary/cloudinary.service'
+import { generateJwt } from '../common/utils'
+import { EmailService } from '../email/email.service'
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword')
+}))
+
+jest.mock('../common/utils/generateJwt.ts', () => ({
+  generateJwt: jest.fn().mockImplementation(() => 'randomToken')
 }))
 
 describe('AuthService', () => {
@@ -38,6 +44,10 @@ describe('AuthService', () => {
       controllers: [AuthController],
       providers: [
         AuthService,
+        {
+          provide: EmailService,
+          useValue: { sendResetPassword: jest.fn().mockResolvedValue('emailSent') }
+        },
         {
           provide: CloudinaryService,
           useValue: { uploadImage: jest.fn(), FiledeleteFile: jest.fn() }
@@ -88,8 +98,6 @@ describe('AuthService', () => {
 
   describe('renew token', () => {
     it('shoult return an user with new token', async () => {
-      jest.spyOn(authService, 'generateJwt').mockResolvedValue('randomToken')
-
       const { token, user } = await authService.renewToken(newMockUser)
 
       expect(user).toEqual(newMockUser)
@@ -101,7 +109,7 @@ describe('AuthService', () => {
     it('shoult return a token', async () => {
       jest.spyOn(jwt, 'sign').mockResolvedValue('randomToken' as never)
 
-      const token = await authService.generateJwt({ id: 'randomID' })
+      const token = generateJwt({ id: 'randomId' })
 
       expect(token).toBe('randomToken')
       expect(typeof token).toBe('string')
@@ -260,7 +268,9 @@ describe('AuthService', () => {
 
     it("should return 200 if the user's email is found", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser)
+
       const result = await authService.forgotPassword(mockForgotPassDto)
+
       expect(result).toEqual('Email succssfully sent')
     })
   })
