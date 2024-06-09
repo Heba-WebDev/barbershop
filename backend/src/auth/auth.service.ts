@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
@@ -8,21 +9,23 @@ import {
 } from '@nestjs/common'
 
 import { compare, hash } from 'bcrypt'
-import { createTransport } from 'nodemailer'
 import { type UUID } from 'crypto'
 import * as jwt from 'jsonwebtoken'
+import { createTransport } from 'nodemailer'
 
+import { JwtService } from '@nestjs/jwt'
+import { CloudinaryService } from '../cloudinary/cloudinary.service'
+import { handleErrorExceptions } from '../common/utils'
 import { PrismaService } from '../prisma/prisma.service'
 import type { CreateUserDto, ForgotPasswordUserDto, LoginUserDto, ResetPassUserDto, UpdateUserDto } from './dto'
 import { type IJwtPayload, type User } from './interfaces'
-import { handleErrorExceptions } from '../common/utils'
-import { CloudinaryService } from '../cloudinary/cloudinary.service'
 
 @Injectable()
 export class AuthService {
   constructor (
     private readonly prismaService: PrismaService,
-    private readonly cloudinaryService: CloudinaryService
+    private readonly cloudinaryService: CloudinaryService,
+    private readonly jwtService: JwtService
   ) {}
 
   async create (createAuthDto: CreateUserDto) {
@@ -30,12 +33,10 @@ export class AuthService {
 
     const user = await this.findUserByEmail(email)
 
-    if (user) {
-      throw new ConflictException(
-        `User with email ${email} is already registered`
-      )
-    }
+    if (user) throw new ConflictException(`User with email ${email} is already registered`)
+
     const hashedPass = await hash(password, 10)
+
     const { id, role } = await this.prismaService.user.create({
       data: {
         name,
@@ -45,7 +46,14 @@ export class AuthService {
       }
     })
 
-    return { user: { id, name, email, phoneNumber, role } }
+    const emailToken = await this.generateJwt({ id })
+
+    await this.prismaService.user.update({ where: { id }, data: { email_token: emailToken } })
+
+    return {
+      user: { id, name, email, phoneNumber, role },
+      token: emailToken
+    }
   }
 
   async findUserByEmail (email: string) {
@@ -208,6 +216,20 @@ export class AuthService {
       })
     } catch (error) {
       handleErrorExceptions(error)
+    }
+  }
+
+  async confirmEmail (token: string) {
+    const user = await this.prismaService.user.findFirst({ where: { email_token: token } })
+
+    if (!user) throw new NotFoundException('Invalid token')
+    if (user.is_verified) throw new ForbiddenException('User already verified')
+
+    await this.prismaService.user.update({ where: { id: user.id }, data: { is_verified: true, email_token: null } })
+
+    return {
+      message: 'Token verified',
+      statusCode: 200
     }
   }
 }
