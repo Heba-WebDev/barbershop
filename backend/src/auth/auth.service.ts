@@ -4,28 +4,27 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  ServiceUnavailableException,
+  // ServiceUnavailableException,
   UnauthorizedException
 } from '@nestjs/common'
 
 import { compare, hash } from 'bcrypt'
 import { type UUID } from 'crypto'
-import * as jwt from 'jsonwebtoken'
-import { createTransport } from 'nodemailer'
+// import { createTransport } from 'nodemailer'
 
-import { JwtService } from '@nestjs/jwt'
 import { CloudinaryService } from '../cloudinary/cloudinary.service'
-import { handleErrorExceptions } from '../common/utils'
+import { generateJwt, handleErrorExceptions } from '../common/utils'
 import { PrismaService } from '../prisma/prisma.service'
 import type { CreateUserDto, ForgotPasswordUserDto, LoginUserDto, ResetPassUserDto, UpdateUserDto } from './dto'
-import { type IJwtPayload, type User } from './interfaces'
+import { type User } from './interfaces'
+import { EmailService } from '../email/email.service'
 
 @Injectable()
 export class AuthService {
   constructor (
     private readonly prismaService: PrismaService,
     private readonly cloudinaryService: CloudinaryService,
-    private readonly jwtService: JwtService
+    private readonly emailService: EmailService
   ) {}
 
   async create (createAuthDto: CreateUserDto) {
@@ -46,7 +45,7 @@ export class AuthService {
       }
     })
 
-    const emailToken = await this.generateJwt({ id })
+    const emailToken = await generateJwt({ id })
 
     await this.prismaService.user.update({ where: { id }, data: { email_token: emailToken } })
 
@@ -72,7 +71,7 @@ export class AuthService {
 
     if (!pass) throw new BadRequestException('Invalid credentials')
 
-    const token = await this.generateJwt({ id: user.id })
+    const token = await generateJwt({ id: user.id })
 
     return {
       user: {
@@ -124,7 +123,9 @@ export class AuthService {
     const user = await this.findUserByEmail(email.email)
 
     if (!user) throw new NotFoundException('User not found')
-    await this.sendEmail(user.id, user.email)
+
+    await this.emailService.sendResetPassword(user.id, user.email, user.name)
+
     return 'Email succssfully sent'
   }
 
@@ -143,50 +144,15 @@ export class AuthService {
       }
     })
     const { id, password, ...user } = usr
-    const token = await this.generateJwt({ id })
+    const token = await generateJwt({ id })
     return {
       user,
       token
     }
   }
 
-  async sendEmail (id: string, email: string) {
-    const token = await this.generateJwt({ id })
-    const transporter = createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    })
-    const mailOptions = {
-      from: process.env.EMAIL_USR,
-      to: email,
-      subject: 'Reiniciar contraseña | Barbería',
-      text: `Gracias por usar nuestros servicos. Hemos recibido una solicitud para restablecer la contraseña de tu cuenta. Haz clic a este enlace ${process.env.BASE_URL}/reset-password/${token}. Si no solicitaste este cambio, ignora este correo electrónico.`
-    }
-    if (process.env.NODE_ENV !== 'test') {
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          throw new ServiceUnavailableException(
-            'An error occured while sending the email'
-          )
-        }
-      })
-    }
-  }
-
-  async generateJwt (payload: IJwtPayload) {
-    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-      expiresIn: process.env.JWT_REFRESH_EXPIRATION
-    })
-    return token
-  }
-
   async renewToken (user: User) {
-    const token = await this.generateJwt({ id: user.id })
+    const token = await generateJwt({ id: user.id })
 
     return {
       user,
