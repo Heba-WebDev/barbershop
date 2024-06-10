@@ -12,7 +12,7 @@ export const Service = ({id, name, price, is_active}: service) => {
             await desactivateServiceApi(id, token as string)
             const res = await fetchServicsApi(token as string)
             setServices(res)
-            toast.success(`El servicio ${name} ha sido desactivado`)
+            toast.success(`El servicio ${name} ha sido ${is_active ? 'desactivado' : 'activado'}`)
         }catch(error) {
             if (error instanceof Error) toast.error(error.message)
         }
