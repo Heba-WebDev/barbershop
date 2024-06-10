@@ -19,8 +19,7 @@ export class ServiceService {
       const company = this.company.findCompanyForOwner(user.id as UUID)
       return await this.prisma.service.findMany({
         where: {
-          company_id: (await company).id,
-          is_active: true
+          company_id: (await company).id
         },
         select: {
           id: true,
