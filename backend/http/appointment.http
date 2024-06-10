@@ -1,3 +1,4 @@
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMmFmYzc2LTg1ZjAtNDRjYi1iZGJlLTY0NTJkYTMwZGUzZiIsImlhdCI6MTcxNjg2MjU4NywiZXhwIjoxNzE2ODY2MTg3fQ.3iHjx-iJgot7eW71UGYG8Ql1F9hN-rzXWCtT9AVL_Hc
 POST http://localhost:3000/api/appointment
 Content-Type: application/json
 
@@ -15,3 +16,8 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/appointment
+Authorization: Bearer {{token}}
+
+###
+GET http://localhost:3000/api/appointment/company
+Authorization: Bearer {{token}}

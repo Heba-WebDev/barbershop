@@ -47,6 +47,32 @@ describe('AppointmentService', () => {
     }
   }
 
+  const newMockGetAppointmentCompany = {
+    0: {
+      employee: {
+        user: {
+          name: 'Dr. Darlene Trantow III'
+        }
+      },
+      start_date: '2024-05-07T00:00:00.000Z',
+      start_time: '1970-01-01T21:00:00.000Z',
+      state: 'PENDING',
+      total: 20,
+      ServiceAppointment: [
+        {
+          service: {
+            name: 'Afeitado clásico'
+          }
+        },
+        {
+          service: {
+            name: 'Afeitado clásico'
+          }
+        }
+      ]
+    }
+  }
+
   const newMockService: UUID[] = ['79785aa3-16fb-4108-87a7-966d4ee6bd0f']
 
   beforeEach(async () => {
@@ -130,12 +156,31 @@ describe('AppointmentService', () => {
       })
     })
   })
-  describe('Find Appointments', () => {
+  describe('Find Appointments for clients', () => {
     it('Should return Appointments', async () => {
       mockPrisma.appointment.findMany.mockResolvedValue({ ...newMockGetAppointment })
 
       const result = await appointmentService.get(newMockUser, { state: undefined })
       expect(result).toEqual(newMockGetAppointment)
+    })
+  })
+
+  describe('Find appinrments for companys', () => {
+    it('Should return Appointments', async () => {
+      jest.spyOn(companyService, 'findCompanyForOwner').mockResolvedValue({
+        id: 'string',
+        name: 'string',
+        phone_number: 'string',
+        address: 'string',
+        is_active: true,
+        avatar: 'string',
+        user_id: 'string'
+      })
+      mockPrisma.appointment.findMany.mockResolvedValue({ ...newMockGetAppointmentCompany })
+
+      const result = await appointmentService.getAppointmetForCompany(newMockUser)
+
+      expect(result).toEqual(newMockGetAppointmentCompany)
     })
   })
 })

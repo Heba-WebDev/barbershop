@@ -35,9 +35,26 @@ export class AppointmentService {
     }
   }
 
-  async getAppointmetForEmployee (user: User) {
-    const company = this.companyService.companyExist(user.id as UUID)
-    console.log(company)
+  async getAppointmetForCompany (user: User) {
+    try {
+      const company = await this.companyService.findCompanyForOwner(user.id as UUID)
+
+      return await this.prisma.appointment.findMany({
+        where: {
+          employee: { company }
+        },
+        select: {
+          employee: { select: { user: { select: { name: true } } } },
+          start_date: true,
+          start_time: true,
+          state: true,
+          total: true,
+          ServiceAppointment: { select: { service: { select: { name: true } } } }
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
   }
 
   async create (createAppointmentDto: CreateAppointmentDto, user: User) {
