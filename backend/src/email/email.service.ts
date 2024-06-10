@@ -20,7 +20,7 @@ export class EmailService {
     const { name, email, token } = emailConfirmationDto
 
     const subject = `Bienvenido ${name}`
-    const url = `${this.baseUrl}?token=${token}`
+    const url = `${this.baseUrl}/confirm_email/token=${token}`
 
     await this.mailerService.sendMail({
       to: email,

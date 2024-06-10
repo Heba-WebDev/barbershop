@@ -23,9 +23,11 @@ export class ServiceService {
           is_active: true
         },
         select: {
+          id: true,
           avatar: true,
           name: true,
-          price: true
+          price: true,
+          is_active: true
         }
       })
     } catch (error) {
