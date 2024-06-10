@@ -33,13 +33,19 @@ export const ProfileView = () => {
                 <p className=' text-sm opacity-25 -mt-1'>{user?.email}</p>
             </div>
             <div className=' mt-[10%]'>
-                {user?.role === 'CLIENT' && <>
+                {!user?.is_verified && user?.role[0] === 'CLIENT' && <>
+                    <div className='p-1 rounded-lg flex w-42 items-center'>
+                        <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaBusinessTime className='opacity-50'/></span>
+                        <Button onClick={() => toast.success('Revisa el correo que te ha llegado para verificar tu cuenta')} className=' bg-transparent hover:bg-transparent'><span className='underline'>Ser propietario</span></Button>
+                    </div>
+                </>}
+                {user?.is_verified && user?.role[0] === 'CLIENT' && <>
                     <div className='p-1 rounded-lg flex w-42 items-center'>
                         <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaBusinessTime className='opacity-50'/></span>
                         <Button className=' bg-transparent hover:bg-transparent'><Link to='/company' className='underline'>Ser propietario</Link></Button>
                     </div>
                 </>}
-                {user?.role !== 'CLIENT' && <>
+                {user?.role[0] !== 'CLIENT' && <>
                     <div className='p-1 rounded-lg flex w-42 items-center'>
                         <span className=' bg-secondary-purple w-10 flex justify-center py-1 rounded-lg items-center'><FaBusinessTime className='opacity-50'/></span>
                         <Button className=' bg-transparent hover:bg-transparent'><Link to='/services' className='underline'>Servicios</Link></Button>
