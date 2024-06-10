@@ -10,6 +10,16 @@ import { FindAppointmentDto } from './dto/find-appointment.dto'
 @Controller('appointment')
 export class AppointmentController {
   constructor (private readonly appointmentService: AppointmentService) {}
+  @ApiBearerAuth()
+  @ApiOperation({
+    description:
+    'This endpoint needs a bearear token to extract the user from the request'
+  })
+  @Get('company')
+  @Auth('OWNER')
+  async getAppointment (@GetUser() user: User) {
+    return await this.appointmentService.getAppointmetForCompany(user)
+  }
 
   @ApiBearerAuth()
   @ApiOperation({
@@ -20,17 +30,6 @@ export class AppointmentController {
   @Auth('CLIENT', 'EMPLOYEE', 'OWNER')
   async get (@GetUser() user: User, @Query() findAppointmentDto: FindAppointmentDto) {
     return await this.appointmentService.get(user, findAppointmentDto)
-  }
-
-  @ApiBearerAuth()
-  @ApiOperation({
-    description:
-    'This endpoint needs a bearear token to extract the user from the request'
-  })
-  @Get()
-  @Auth('OWNER')
-  async getAppointment (@GetUser() user: User) {
-    await this.appointmentService.getAppointmetForEmployee(user)
   }
 
   @ApiBearerAuth()
