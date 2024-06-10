@@ -23,7 +23,7 @@ interface User {
     is_active: string;
     is_verified: string;
     avatar: string;
-    role: string;
+    role: string[];
     company?: Company;
 }
 
