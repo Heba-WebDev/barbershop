@@ -37,6 +37,16 @@ describe('AppointmentService', () => {
     employee: 'Annie Spinka'
   }
 
+  const newMockGetAppointment = {
+    0: {
+      employee_id: '56937c33-a147-408e-8626-1c8a8b255abe',
+      id: '0f192369-8e5d-493e-9727-6c818b67eee7',
+      start_date: '2024-05-07T00:00:00.000Z',
+      start_time: '1970-01-01T21:00:00.000Z',
+      state: 'PENDING'
+    }
+  }
+
   const newMockService: UUID[] = ['79785aa3-16fb-4108-87a7-966d4ee6bd0f']
 
   beforeEach(async () => {
@@ -118,6 +128,14 @@ describe('AppointmentService', () => {
       expect(result).toEqual({
         count: '1'
       })
+    })
+  })
+  describe('Find Appointments', () => {
+    it('Should return Appointments', async () => {
+      mockPrisma.appointment.findMany.mockResolvedValue({ ...newMockGetAppointment })
+
+      const result = await appointmentService.get(newMockUser, { state: undefined })
+      expect(result).toEqual(newMockGetAppointment)
     })
   })
 })

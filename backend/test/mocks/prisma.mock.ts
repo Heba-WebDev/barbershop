@@ -11,7 +11,8 @@ export const mockPrisma = {
     update: jest.fn().mockResolvedValue({}) // Mock the update method
   },
   appointment: {
-    create: jest.fn()
+    create: jest.fn(),
+    findMany: jest.fn()
   },
   employeeCompany: {
     findUnique: jest.fn(),
