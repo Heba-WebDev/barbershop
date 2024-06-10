@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { userState } from '@/state/user'
 import { useNavigate } from 'react-router-dom'
 import { confirmEmailApi } from './api'
-import { toast } from 'react-toastify'
 
 export const EmailConfirmationView = () => {
-    const [verifyToken, setVerifyToken] = useState<boolean | null>(null)
+    const [verifyToken, setVerifyToken] = useState<boolean | null>(false)
     const user = userState((state) => state.user)
     const navigate = useNavigate()
     const params = useParams()
@@ -18,8 +17,6 @@ export const EmailConfirmationView = () => {
             try {
                 await confirmEmailApi(token as string)
                 setVerifyToken(true)
-                toast.success('Tu correo ha sideo verificado')
-                navigate('/')
             } catch (error) {
                 setVerifyToken(false)
                 navigate('/')
@@ -39,6 +36,12 @@ export const EmailConfirmationView = () => {
             <h2 className=' font-bold text-2xl text-center'>Tu correo ha sideo verificado!</h2>}
             <img src='/email-confirmed.svg' className='
              max-w-60 md:max-w-96 mx-auto' />
+            <Link
+                to='/'
+                className='bg-light-cayn p-3 rounded-full text-center font-semibold underline mx-auto w-fit mt-4 text-black hover:bg-[#68CBD9]'
+            >
+                <span className=' px-4'>Volver a la página principal</span>
+            </Link>
         </section>
     )
 }
