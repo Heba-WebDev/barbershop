@@ -47,7 +47,7 @@ export const fetchServicsApi = async (token: string) => {
 
 export const desactivateServiceApi = async(serviceId:string, token:string) => {
     try {
-        const response = await api.patch(`/api/service/update-active-service/${serviceId}`, {
+        const response = await api.patch(`/api/service/update-active-service/${serviceId}`, null, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
