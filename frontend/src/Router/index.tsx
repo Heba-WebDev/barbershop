@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { RegisterView, ServicesView, HoursView, HomeView, LoginView, ProfileView, CompanyView } from '../pages'
+import { RegisterView, ServicesView, HoursView, HomeView, LoginView, ProfileView, CompanyView, EmailConfirmationView } from '../pages'
 import { MainLayout } from '@/layouts/mainLayout'
 import { MyReservationsView } from '@/pages/myreservations/MyReservations'
 import { NewReservationView } from '@/pages/newReservation/newReservationView'
@@ -19,6 +19,10 @@ const router = createBrowserRouter([
             {
                 path: '/login',
                 element: <LoginView />,
+            },
+            {
+                path: '/confirm_email/:token',
+                element: <EmailConfirmationView />,
             },
             {
                 path: '/services',
