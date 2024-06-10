@@ -7,6 +7,7 @@ import { handleErrorExceptions } from '../common/utils'
 import { CompanyService } from '../company/company.service'
 import { type User } from '../auth/interfaces'
 import { getTimeForDate } from '../schedule/utils'
+import { type FindAppointmentDto } from './dto/find-appointment.dto'
 
 @Injectable()
 export class AppointmentService {
@@ -15,6 +16,29 @@ export class AppointmentService {
     private readonly serviceService: ServiceService,
     private readonly companyService: CompanyService
   ) {}
+
+  async get (user: User, findAppointmentDto: FindAppointmentDto) {
+    const { state } = findAppointmentDto
+    try {
+      return await this.prisma.appointment.findMany({
+        where: { user_id: user.id, state },
+        select: {
+          employee_id: true,
+          id: true,
+          start_date: true,
+          start_time: true,
+          state: true
+        }
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async getAppointmetForEmployee (user: User) {
+    const company = this.companyService.companyExist(user.id as UUID)
+    console.log(company)
+  }
 
   async create (createAppointmentDto: CreateAppointmentDto, user: User) {
     try {
