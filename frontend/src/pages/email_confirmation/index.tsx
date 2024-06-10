@@ -7,6 +7,7 @@ import { confirmEmailApi } from './api'
 export const EmailConfirmationView = () => {
     const [verifyToken, setVerifyToken] = useState<boolean | null>(false)
     const user = userState((state) => state.user)
+    const setUser = userState((state) => state.setUser)
     const navigate = useNavigate()
     const params = useParams()
     const token = params.token?.split('=')[1]
@@ -17,6 +18,17 @@ export const EmailConfirmationView = () => {
             try {
                 await confirmEmailApi(token as string)
                 setVerifyToken(true)
+                setUser({
+                    id: user?.id as string,
+                    name: user?.name as string,
+                    email: user?.email as string,
+                    phone_number: user?.phone_number as string,
+                    is_active: user?.is_active as string,
+                    is_verified: 'true',
+                    avatar: user?.avatar as string,
+                    role: user?.role as string[],
+                    company: user?.company ,
+                })
             } catch (error) {
                 setVerifyToken(false)
                 navigate('/')
