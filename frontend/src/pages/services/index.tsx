@@ -27,9 +27,11 @@ export const ServicesView = () => {
                     return (
                         <div key={data.name}>
                             <Service
+                                id={data.id}
                                 avatar={data.avatar}
                                 name={data.name}
                                 price={parseFloat(data.price)}
+                                is_active={data.is_active}
                             />
                             {fakeData[fakeData.length - 1].name !== data.name && <hr className=' opacity-30'/>}
                         </div>
