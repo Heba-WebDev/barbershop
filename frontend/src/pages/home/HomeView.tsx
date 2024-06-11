@@ -13,7 +13,7 @@ export const HomeView = () => {
 
     //const data=useLoaderData() as HomeData;
     return (
-        <div className=" bg-[#13001f] px-5 sm:px-0">
+        <div className="  px-5 sm:px-0">
             <Header />
 
             <SearchSection/>
