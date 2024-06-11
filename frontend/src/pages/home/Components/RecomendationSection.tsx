@@ -18,14 +18,13 @@ const bestBarbers=[
         barberShop:'Flow Barbershop',
         rating:4.2,
         avatar:'https://cdn-icons-png.flaticon.com/512/147/147144.png',
-        
     }
 ]
 
 export const RecomendationSection = () => {
     return (
-        <section className=" mt-10 pb-10">
-            <h2 className="text-2xl text-purple-200 text-center mb-7">
+        <section className=" mt-20 pb-10">
+            <h2 className="text-2xl text-gray-300 text-center mb-10">
             Barberos recomendados</h2>
             <div className="flex justify-around">
                 {bestBarbers.map((barber)=>{
@@ -33,10 +32,10 @@ export const RecomendationSection = () => {
                         <div>
                             <img src={barber.avatar}
                                 className="w-32 mb-4"/>
-                            <h3 className="text-center text-lg text-purple-200">
+                            <h3 className="text-center text-lg text-light-cayn">
                                 {barber.name}</h3>
-                            <p className="text-center text-sm text-gray-200">{barber.barberShop}</p>
-                            <p className="text-indigo-200 flex items-center justify-center"><FaStar className="text-yellow-200 inline-block mr-2" />{barber.rating}</p>
+                            <p className="text-center text-sm text-gray-400">{barber.barberShop}</p>
+                            <p className="text-indigo-100 flex items-center justify-center"><FaStar className="text-yellow-200 inline-block mr-2" />{barber.rating}</p>
                         </div>
                     )
                 })}
