@@ -48,7 +48,7 @@ export const RegisterView = () => {
                 onSubmit={handleSubmit}
             >
                 {(formik) => (
-                    <Form className='flex flex-col gap-3'>
+                    <Form className='flex flex-col gap-3 -mt-12'>
                         <FaUserCircle  className=' text-purple-500 text-9xl rounded-full mx-auto p-1 mb-6 bg-gray-800'/>
                         <div className='flex flex-col'>
                             <label htmlFor='name'></label>
@@ -148,7 +148,7 @@ export const RegisterView = () => {
                                 )}
                             </div>
                         </div>
-                        <Button type='submit' className=' mt-[30%] bg-light-cayn rounded-full max-w-36 mx-auto w-full text-black hover:bg-[#68CBD9]'>Registrarme</Button>
+                        <Button type='submit' className=' mt-[4%] bg-light-cayn rounded-full max-w-36 mx-auto w-full text-black hover:bg-[#68CBD9]'>Registrarme</Button>
                         <div className=' flex gap-1 text-center mx-auto text-sm'>
                             <span>Ya tienes una cuenta?</span>
                             <a href='/login' className=' text-light-cayn font-bold underline'>Entrar</a>
