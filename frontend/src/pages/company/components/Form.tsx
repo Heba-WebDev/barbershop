@@ -37,10 +37,10 @@ export const CompanyForm = () => {
                 name: usr?.name as string,
                 email: usr?.email as string,
                 phone_number: usr?.phone_number as string,
-                is_active: 'true',
-                is_verified: 'true',
+                is_active: true,
+                is_verified: true,
                 avatar: usr?.avatar as string,
-                role: 'OWNER'
+                role: ['OWNER']
             })
             company(res)
             navigate('/')
