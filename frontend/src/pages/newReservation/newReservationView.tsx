@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
+import { userState } from "@/state/user"
 
 const servicios=[
     {
@@ -87,9 +87,10 @@ const products=[
 
 
 export const NewReservationView = () => {
-
+    const isLoggedin = userState((state) => state.is_loggedin)
+    const user = userState((state) => state.user)
     const [searchParams]=useSearchParams()
-    const navigate=useNavigate()
+    const navigate = useNavigate()
 
     const barbershop=searchParams.get('barbershop')
 
@@ -104,8 +105,8 @@ export const NewReservationView = () => {
     })
 
     useEffect(() => {
-        if (!barbershop) {
-        //   navigate('/')
+        if (!isLoggedin || user?.role[0] !== 'CLIENT') {
+             navigate('/')
         }
       }, [barbershop, navigate])
 
