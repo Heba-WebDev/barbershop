@@ -18,12 +18,14 @@ export const LoginView = () => {
     }
     const setToken = userState((state) => state.setToken)
     const setUser = userState((state) => state.setUser)
+    const setLoggedin = userState((state) => state.setLoggedin)
     const token = userState((store) => store.token)
     const handleSubmit = async (values: ILogin) => {
         try {
             const res = await loginApi(values)
             setUser(res.user)
             setToken(res.token)
+            setLoggedin(true)
             toast.success('Iniciado sesión exitosamente')
             navigate('/')
         } catch (error: unknown) {
@@ -36,7 +38,7 @@ export const LoginView = () => {
         }
     }, [navigate, token])
     return (
-        <section className=" grid items-center max-w-md mx-auto  h-screen px-4">
+        <section className="grid items-center max-w-md mx-auto  h-screen px-4">
             <Formik
                 initialValues={initialValues}
                 validationSchema={loginValidationSchema}
@@ -45,7 +47,7 @@ export const LoginView = () => {
                 {(formik) => (
                     <Form
                         onSubmit={formik.handleSubmit}
-                        className=" flex flex-col gap-3"
+                        className=" flex flex-col gap-3 -mt-12"
                     >
                         <FaUserCircle  className=' text-purple-500 text-9xl rounded-full mx-auto p-1 mb-6 bg-gray-800'/>
                         <div className=" flex flex-col">
@@ -92,6 +94,10 @@ export const LoginView = () => {
                         >
                 Entrar
                         </Button>
+                        <div className=' flex gap-1 text-center mx-auto text-sm'>
+                            <span>No tienes una cuenta?</span>
+                            <a href='/register' className=' text-light-cayn font-bold underline'>Registrate</a>
+                        </div>
                     </Form>
                 )}
             </Formik>
