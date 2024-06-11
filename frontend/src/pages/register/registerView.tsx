@@ -85,7 +85,7 @@ export const RegisterView = () => {
                                 />
                             </div>
                         </div>
-                        {formik.errors.email && formik.touched.password ? (
+                        {formik.errors.email && formik.touched.email ? (
                             <span className='text-red-600 text-sm pt-1'>{formik.errors.email}</span>
                         ) : (
                             ''

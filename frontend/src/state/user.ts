@@ -22,8 +22,8 @@ interface User {
     name: string;
     email: string;
     phone_number: string;
-    is_active: string;
-    is_verified: string;
+    is_active: boolean;
+    is_verified: boolean;
     avatar: string;
     role: string[];
     company?: Company;
