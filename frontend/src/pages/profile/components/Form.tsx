@@ -1,18 +1,69 @@
+import { useState } from 'react'
 import { Formik, Form } from 'formik'
-import { FaEnvelope, FaUser, FaPhone, FaEdit } from 'react-icons/fa'
+import { FaEnvelope, FaUser, FaPhone, FaEdit, FaCheck } from 'react-icons/fa'
+import { MdDelete } from 'react-icons/md'
 import { updateProfileValidationSchema } from '../schema'
 import { IValues } from '../types'
 import { userState } from '@/state/user'
+import { toast } from 'react-toastify'
+import { updateNameApi, updatePhoneNumberApi } from '../api'
 
 export const ProfileForm = () => {
+    const [edit, setEdit] = useState({
+        name: false,
+        email: false,
+        phoneNumber: false,
+    })
     const user = userState((state) => state.user)
+    const setUSer = userState((state) => state.setUser)
+    const token = userState((state) => state.token)
     const initialValues: IValues = {
         name: user?.name as string,
         email: user?.email as string,
         phoneNumber: user?.phone_number as string
     }
-    const handleSubmit = () => {}
 
+    const handleNameChange = async(values: IValues) => {
+        try {
+            await updateNameApi(values.name, user?.id as string, token as string)
+            setUSer({
+                id: user?.id as string,
+                name:values.name,
+                email: user?.email as string,
+                phone_number: user?.phone_number as string,
+                is_active: user?.is_active as boolean,
+                is_verified: user?.is_verified as boolean,
+                avatar: user?.avatar as string,
+                role: user?.role as string[],
+                company: user?.company
+            })
+            toast.success('El nombre ha sido cambiado exitosamente')
+            setEdit({ ...edit, name: false })
+        }catch(error) {
+            if (error instanceof Error) toast.error(error.message)
+        }
+    }
+    const handlePhoneNumberChange = async(values: IValues) => {
+        try {
+            await updatePhoneNumberApi(values.phoneNumber, user?.id as string, token as string)
+            setUSer({
+                id: user?.id as string,
+                name: user?.name as string,
+                email: user?.email as string,
+                phone_number: values.phoneNumber as string,
+                is_active: user?.is_active as boolean,
+                is_verified: user?.is_verified as boolean,
+                avatar: user?.avatar as string,
+                role: user?.role as string[],
+                company: user?.company
+            })
+            toast.success('El número de teléfono ha sido cambiado exitosamente')
+            setEdit({ ...edit, phoneNumber: false })
+        }catch(error) {
+            if (error instanceof Error) toast.error(error.message)
+        }
+    }
+    const handleSubmit = () => {}
     return (
         <section className="w-full items-center max-w-md mx-auto px-4">
             <Formik
@@ -28,17 +79,29 @@ export const ProfileForm = () => {
                                 <div className=' w-full'>
                                     <FaUser className="absolute bottom-3 left-4 opacity-20" />
                                     <input
-                                        disabled={true}
+                                        disabled={!edit.name}
                                         name="name"
                                         type="text"
                                         placeholder="Nombre"
                                         onChange={formik.handleChange}
                                         value={formik.values.name}
-                                        className="pl-10 w-full text-dark-gray bg-transparent border border-gray-500
-                                 rounded-full py-[2px] h-10 focus:outline-none"
+                                        className={`pl-10 w-full ${edit['name'] ? '' : 'text-dark-gray '} bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none`}
                                     />
                                 </div>
-                                <button><FaEdit className=' text-xl opacity-50'/></button>
+                                {!edit['name'] ? <>
+                                    <button onClick={() => {
+                                        setEdit({ ...edit, name: true })
+                                    }}><FaEdit className=' text-xl opacity-50'/></button>
+                                </>
+                                    :
+                                    <>
+                                        <button type='submit' onClick={() => handleNameChange(formik.values)}><FaCheck className='text-green-400 opacity-50'/></button>
+                                        <button onClick={() => {
+                                            setEdit({ ...edit, name: false })
+                                        }}><MdDelete className='text-red-600 opacity-50'/></button>
+                                    </>
+                                }
                             </div>
                         </div>
                         {formik.errors.name && formik.touched.name ? (
@@ -64,7 +127,7 @@ export const ProfileForm = () => {
                                  rounded-full py-[2px] h-10 focus:outline-none"
                                     />
                                 </div>
-                                <button><FaEdit className=' text-xl opacity-50'/></button>
+                                <button onClick={() => toast.error('No se puede cambiar el correo')}><FaEdit className=' text-xl opacity-50'/></button>
                             </div>
                         </div>
                         {formik.errors.email && formik.touched.email ? (
@@ -81,17 +144,29 @@ export const ProfileForm = () => {
                                     <div className='w-full relative'>
                                         <FaPhone className="absolute bottom-3 left-4 opacity-20" />
                                         <input
-                                            disabled={true}
+                                            disabled={!edit['phoneNumber']}
                                             name="phoneNumber"
                                             type="text"
                                             placeholder="Escribe tu numbero de telefono"
                                             onChange={formik.handleChange}
                                             value={formik.values.phoneNumber}
-                                            className="pl-10 w-full text-dark-gray bg-transparent border border-gray-500
-                                 rounded-full py-[2px] h-10 focus:outline-none"
+                                            className={`pl-10 w-full ${edit['phoneNumber'] ? '' : 'text-dark-gray '} bg-transparent border border-gray-500
+                                 rounded-full py-[2px] h-10 focus:outline-none`}
                                         />
                                     </div>
-                                    <button><FaEdit className=' text-xl opacity-50'/></button>
+                                    {!edit['phoneNumber'] ? <>
+                                        <button onClick={() => {
+                                            setEdit({ ...edit, phoneNumber: true })
+                                        }}><FaEdit className=' text-xl opacity-50'/></button>
+                                    </>
+                                        :
+                                        <>
+                                            <button type='submit' onClick={() => handlePhoneNumberChange(formik.values)}><FaCheck className='text-green-400 opacity-50'/></button>
+                                            <button onClick={() => {
+                                                setEdit({ ...edit, phoneNumber: false })
+                                            }}><MdDelete className='text-red-600 opacity-50'/></button>
+                                        </>
+                                    }
                                 </div>
                                 {formik.touched.phoneNumber && (
                                     <p className="text-red-600  text-sm pt-1">
@@ -99,10 +174,6 @@ export const ProfileForm = () => {
                                     </p>
                                 )}
                             </div>
-                        </div>
-                        <div className='flex gap-4 justify-around mt-4'>
-                            <button className=' bg-light-cayn font-semibold text-black py-1 text-opacity-85 rounded-xl w-full'>Guardar</button>
-                            <button className='py-1 border border-gray-50 border-opacity-20 text-red-400 text-opacity-85 rounded-xl w-full'>Cancelar</button>
                         </div>
                     </Form>
                 )}
