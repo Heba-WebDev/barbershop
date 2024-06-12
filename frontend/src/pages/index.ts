@@ -6,3 +6,5 @@ export { HoursView } from './hours/index'
 export { ProfileView } from './profile/ProfileView'
 export { CompanyView } from './company/CompanyView'
 export { EmailConfirmationView } from './email_confirmation'
+export {RecoverPassView} from './recoverPass/RecoverPassView';
+export {NewPassView} from './newPass/NewPassView';
