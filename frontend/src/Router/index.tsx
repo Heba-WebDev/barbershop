@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { RegisterView, ServicesView, HoursView, HomeView, LoginView, ProfileView, CompanyView, EmailConfirmationView } from '../pages'
+import { RegisterView, ServicesView, HoursView, HomeView, LoginView, ProfileView, CompanyView, EmailConfirmationView, RecoverPassView, NewPassView } from '../pages'
 import { MainLayout } from '@/layouts/mainLayout'
 import { MyReservationsView } from '@/pages/myreservations/MyReservations'
 import { NewReservationView } from '@/pages/newReservation/newReservationView'
@@ -51,6 +51,14 @@ const router = createBrowserRouter([
             {
                 path:'/new-reservation',
                 element: <NewReservationView />
+            },
+            {
+                path:'/recover-password',
+                element: <RecoverPassView />
+            },
+            {
+                path:'/new-password',
+                element: <NewPassView />
             }
         ],
     },

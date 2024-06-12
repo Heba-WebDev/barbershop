@@ -98,6 +98,10 @@ export const LoginView = () => {
                             <span>No tienes una cuenta?</span>
                             <a href='/register' className=' text-light-cayn font-bold underline'>Registrate</a>
                         </div>
+                        <div className='text-center text-sm text-cyan-200 underline'>
+                            <p>o</p>
+                            <a href='./recover-password'><p>¿Te has olvidado tu contraseña?</p>  </a>
+                        </div>
                     </Form>
                 )}
             </Formik>
