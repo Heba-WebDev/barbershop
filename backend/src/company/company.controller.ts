@@ -14,10 +14,9 @@ export class CompanyController {
   @ApiBearerAuth()
   @ApiOperation({
     description:
-    'This endpoint needs a bearear token to extract the user from the request'
+    'Find all barberies'
   })
   @Get()
-  @Auth('CLIENT', 'EMPLOYEE', 'OWNER')
   async getALl () {
     return await this.companyService.getAllCompanys()
   }
