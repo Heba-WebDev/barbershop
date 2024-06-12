@@ -11,16 +11,19 @@ export const BottomNavBar = () => {
     const isLoggedin = userState((state) => state.is_loggedin)
     const navItems=[
         {
+            id: 1,
             name:'',
             icon:<FaHome />,
             path:'/home'
         },
         {
+            id: 2,
             name:'',
             icon: user?.role[0] === 'CLIENT' ? <FaCalendarCheck /> : <FaBusinessTime />,
             path: user?.role[0] === 'CLIENT' ? '/reservations' : '/services',
         },
         {
+            id: 3,
             name:'',
             icon: token ? <FaUserCircle /> : <FaSignInAlt />,
             path: token ? '/profile' : '/register'
@@ -29,11 +32,13 @@ export const BottomNavBar = () => {
     ]
     const navItemsLoggedin = [
         {
+            id: 1,
             name:'',
             icon:<FaHome />,
             path:'/home'
         },
         {
+            id: 2,
             name:'',
             icon: <FaSignInAlt />,
             path: '/register'
@@ -49,7 +54,7 @@ export const BottomNavBar = () => {
             {
                 isLoggedin && navItems.map((item)=>{
                     return (
-                        <div key={item.name} className=" w-3/12">
+                        <div key={item.id} className=" w-3/12">
                             <a href={item.path}>
                                 <div className={`flex items-center py-2 px-4 justify-center
                                                         ${currentRoute.pathname===item.path &&
