@@ -16,5 +16,5 @@ export const updateProfileValidationSchema = Yup.object({
         ),
     phoneNumber: Yup.string()
         .required('Confirmar numero de telefono')
-        .min(8),
+        .min(8, 'El numero de telefono debe tener mas de 8 numeros'),
 })
