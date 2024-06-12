@@ -2,9 +2,10 @@ import { useEffect } from 'react'
 import { userState } from '@/state/user'
 import { Link, useNavigate } from 'react-router-dom'
 import { ProfileAvatar } from '@/lib/profileAvatar'
-import { FaEdit, FaSignOutAlt, FaBusinessTime } from 'react-icons/fa'
+import { FaSignOutAlt, FaBusinessTime } from 'react-icons/fa'
 import { Button } from '@/components/ui/button'
 import { toast } from 'react-toastify'
+import { ProfileForm } from './components/Form'
 
 export const ProfileView = () => {
     const token = userState((store) => store.token)
@@ -23,13 +24,12 @@ export const ProfileView = () => {
         }
     }, [navigate, token])
     return (
-        <section className='h-screen py-4'>
-            <div className='relative rounded-lg bg-secondary-purple h-[70%] w-[95%] mx-auto mt-10 flex gap-1 flex-col py-4 items-center'>
-                <Button className='absolute w-6 h-2 opacity-40 right-4 z-40 bg-transparent hover:bg-transparent'></Button>
-                <FaEdit className=' absolute w-6 opacity-40 right-4' />
+        <section className='py-4 h-screen flex flex-col gap-2'>
+            <div className='rounded-lg bg-secondary-purple w-[95%] mx-auto flex gap-1 flex-col py-4 '>
                 {user && <ProfileAvatar name={user?.name as string} />}
-                <p className=' text-lg mt-1'>{user?.name}</p>
-                <p className=' text-sm opacity-25 -mt-1'>{user?.email}</p>
+                <p className='text-center text-lg mt-1'>{user?.name}</p>
+                <p className='text-center text-sm opacity-25 -mt-1'>{user?.email}</p>
+                <ProfileForm />
             </div>
             <div className='mt-[3%] pl-[2%]'>
                 {!user?.is_verified && user?.role[0] === 'CLIENT' && <>

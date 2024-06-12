@@ -29,14 +29,14 @@ export const ProductsBar = () => {
     const usr = userState((state) => state.user)
     return (
         <>
-            <section className="flex justify-around mt-10 py-10">
+            <section className="flex gap-2 justify-around mt-10 py-10">
                 {
                     products.map((product)=>{
                         return(
                             <div>
                                 <a href="/services">
-                                    <div className=" bg-secondary-purple text-5xl p-5 rounded-xl">
-                                        <span className="flex justify-center text-light-cayn">{product.icon}</span>
+                                    <div className=" bg-secondary-purple text-5xl p-5 rounded-xl w-16 h-16 md:w-auto md:h-auto flex md:block item-center justify-center">
+                                        <span className="flex justify-center text-light-cayn -mt-2 w-10 h-10 mx-auto">{product.icon}</span>
                                     </div>
                                     <h2 className=" text-gray-400 text-center text-lg mt-2">{product.name}</h2>
                                 </a>

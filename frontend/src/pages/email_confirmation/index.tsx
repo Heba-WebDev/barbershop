@@ -13,7 +13,7 @@ export const EmailConfirmationView = () => {
     const navigate = useNavigate()
     const params = useParams()
     const token = params.token?.split('=')[1]
-    if (user?.is_verified == 'true') navigate('/')
+    if (user?.is_verified === true) navigate('/')
     if (!token) navigate('/')
     useEffect(() => {
         const verify = async () => {
@@ -26,8 +26,8 @@ export const EmailConfirmationView = () => {
                         name: user?.name as string,
                         email: user?.email as string,
                         phone_number: user?.phone_number as string,
-                        is_active: user?.is_active as string,
-                        is_verified: 'true',
+                        is_active: user?.is_active as boolean,
+                        is_verified: true,
                         avatar: user?.avatar as string,
                         role: user?.role as string[],
                         company: user?.company,
@@ -44,9 +44,9 @@ export const EmailConfirmationView = () => {
 
     return (
         <section className='flex flex-col justify-center h-screen gap-4 py-8'>
-            {user?.is_verified === 'false' && verifyToken === false && <h2 className=' font-bold text-2xl text-center'>No hemos podido verificar tu correo</h2>}
+            {user?.is_verified === false && verifyToken === false && <h2 className=' font-bold text-2xl text-center'>No hemos podido verificar tu correo</h2>}
 
-            {user?.is_verified === 'false' &&
+            {user?.is_verified === false &&
             verifyToken === null && <h2 className=' font-bold text-2xl text-center'>Estamos verificadando tu correo ...</h2>}
 
             {verifyToken &&

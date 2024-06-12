@@ -26,7 +26,7 @@ export const RecomendationSection = () => {
         <section className=" mt-20 pb-10">
             <h2 className="text-2xl text-gray-300 text-center mb-10">
             Barberos recomendados</h2>
-            <div className="flex justify-around">
+            <div className="flex gap-1 justify-around">
                 {bestBarbers.map((barber)=>{
                     return(
                         <div>
