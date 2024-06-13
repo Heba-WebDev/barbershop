@@ -46,17 +46,6 @@ export const HoursView: FC<Hours> = () => {
           );
         })} */}
       </section>
-      <div className="flex justify-evenly pt-3">
-        <button className="bg-secondary-purple px-7 py-3 rounded-2xl hover:bg-[#68CBD9] hover:text-[#2C293A]">
-          30 min
-        </button>
-        <button className="bg-secondary-purple px-7 py-3 rounded-2xl hover:bg-[#68CBD9] hover:text-[#2C293A]">
-          45 min
-        </button>
-        <button className="bg-secondary-purple px-7 py-3 rounded-2xl hover:bg-[#68CBD9] hover:text-[#2C293A]">
-          60 min
-        </button>
-      </div>
     </main>
   );
 };
