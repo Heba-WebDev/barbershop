@@ -1,10 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
 
-import { getTimeForDate, getHoursWithInterval, getFormatedHours, getNameDay } from './utils'
+import { type $Enums } from '@prisma/client'
+import { AppointmentService } from '../appointment/appointment.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { type QueryParamsScheduleDto, type UpdateScheduleDto } from './dto'
-import { AppointmentService } from '../appointment/appointment.service'
-import { type $Enums } from '@prisma/client'
+import { getFormatedHours, getHoursWithInterval, getNameDay, getTimeForDate } from './utils'
 
 @Injectable()
 export class ScheduleService {
@@ -92,6 +92,38 @@ export class ScheduleService {
     const allAvailableHours = await this.appointmentService.findAllAvailableHours(date, allPossibleHours)
 
     return getFormatedHours(allAvailableHours)
+  }
+
+  async create (companyId: string, day: $Enums.Day) {
+    const scheduleFound = await this.prismaService.schedule.findFirst({
+      where: { company_id: companyId, day }
+    })
+
+    if (scheduleFound) throw new ConflictException('The company already has a schedule for this day')
+
+    const schedule = await this.prismaService.schedule.create({
+      data: {
+        day,
+        company_id: companyId
+      }
+    })
+
+    return schedule
+  }
+
+  async createSchedulesCampany (companyId: string) {
+    await this.findOneCompanyById(companyId)
+
+    const companyHasSchedules = await this.prismaService.schedule.findFirst({ where: { company_id: companyId } })
+
+    if (companyHasSchedules) return
+
+    const dayNames: $Enums.Day[] = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+
+    return await this.prismaService.$transaction(
+      // eslint-disable-next-line
+      Array(7).fill(null).map((_, index) => this.prismaService.schedule.create({ data: { company_id: companyId, day: dayNames[index]} }))
+    )
   }
 
   // todo: move to company module

@@ -8,6 +8,7 @@ import { AppointmentModule } from '../appointment/appointment.module'
 @Module({
   controllers: [ScheduleController],
   providers: [ScheduleService, PrismaService],
-  imports: [AppointmentModule]
+  imports: [AppointmentModule],
+  exports: [ScheduleService]
 })
 export class ScheduleModule {}
