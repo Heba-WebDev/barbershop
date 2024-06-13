@@ -44,10 +44,10 @@ export class CompanyController {
   @Post()
   @Auth('CLIENT')
   async create (@Body() createCompanyDto: CreateCompanyDto, @GetUser() user: User) {
-    return await this.companyService.create(createCompanyDto, user)
+    const company = await this.companyService.create(createCompanyDto, user)
 
-    // await this.scheduleService.createSchedulesCampany(company.id)
+    await this.scheduleService.createSchedulesCampany(company.id)
 
-    // return company
+    return company
   }
 }

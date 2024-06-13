@@ -1,7 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
 
 import { type $Enums } from '@prisma/client'
-import { AppointmentService } from '../appointment/appointment.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { type QueryParamsScheduleDto, type UpdateScheduleDto } from './dto'
 import { getFormatedHours, getHoursWithInterval, getNameDay, getTimeForDate } from './utils'
@@ -9,8 +8,7 @@ import { getFormatedHours, getHoursWithInterval, getNameDay, getTimeForDate } fr
 @Injectable()
 export class ScheduleService {
   constructor (
-    private readonly prismaService: PrismaService,
-    private readonly appointmentService: AppointmentService
+    private readonly prismaService: PrismaService
   ) {}
 
   async update (id: number, userId: string, updateScheduleDto: UpdateScheduleDto) {
@@ -89,7 +87,7 @@ export class ScheduleService {
     const { id } = await this.findOneByCompanyIdAndDay(companyId, day)
     const allPossibleHours = await this.findHoursWithIntervalById(id)
 
-    const allAvailableHours = await this.appointmentService.findAllAvailableHours(date, allPossibleHours)
+    const allAvailableHours = await this.findAllAvailableHours(date, allPossibleHours)
 
     return getFormatedHours(allAvailableHours)
   }
@@ -116,7 +114,7 @@ export class ScheduleService {
 
     const companyHasSchedules = await this.prismaService.schedule.findFirst({ where: { company_id: companyId } })
 
-    if (companyHasSchedules) return
+    if (companyHasSchedules) return null
 
     const dayNames: $Enums.Day[] = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
 
@@ -137,5 +135,29 @@ export class ScheduleService {
     const company = await this.prismaService.company.findFirst({ where: { user_id: id } })
     if (!company) throw new NotFoundException(`User with ${id} dont't have a company`)
     return company
+  }
+
+  private async findAllTimesWithDate (date: Date) {
+    const allReservedTimes = await this.prismaService.appointment.findMany({
+      where: { start_date: date },
+      select: { start_time: true }
+    })
+
+    const allReservedTimesFormated = allReservedTimes.map(time => getTimeForDate(time.start_time))
+    return allReservedTimesFormated
+  }
+
+  async findAllAvailableHours (date: Date, hours: string[]) {
+    const allReservedHours = await this.findAllTimesWithDate(date)
+
+    const availableHours: string[] = []
+
+    hours.forEach(hour => {
+      if (allReservedHours.includes(hour)) return
+
+      availableHours.push(hour)
+    })
+
+    return availableHours
   }
 }
