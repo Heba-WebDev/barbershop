@@ -45,6 +45,7 @@ export function ServiceDialog() {
     }
     return (
         <div>
+            
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     <Button
@@ -93,6 +94,7 @@ export function ServiceDialog() {
 
                                 <div className='flex flex-col'>
                                     <label htmlFor='price'></label>
+                                    
                                     <div className='relative'>
                                         <FaUser className='absolute bottom-3 left-4 opacity-20' />
                                         <input
