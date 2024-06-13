@@ -41,7 +41,8 @@ export class AppointmentService {
           id: true,
           start_date: true,
           start_time: true,
-          state: true
+          state: true,
+          ServiceAppointment: { select: { service: { select: { name: true, id: true } } } }
         }
       })
     } catch (error) {
@@ -63,7 +64,7 @@ export class AppointmentService {
           start_time: true,
           state: true,
           total: true,
-          ServiceAppointment: { select: { service: { select: { name: true } } } }
+          ServiceAppointment: { select: { service: { select: { name: true, id: true } } } }
         }
       })
     } catch (error) {
@@ -141,18 +142,6 @@ export class AppointmentService {
         appointment_id: appointmentID,
         service_id: service
       }))
-
-    // const logService
-
-    // for (const serv of services) {
-    //   const { name, id } = await this.serviceService.findServiceUUID(serv)
-    //   const logService = {
-    //     ...logService,
-    //     name,
-    //     id
-
-    //   }
-    // }
 
     try {
       return await this.prisma.serviceAppointment.createMany({
