@@ -106,7 +106,7 @@ export const NewReservationView = () => {
 
     useEffect(() => {
         if (!isLoggedin || user?.role[0] !== 'CLIENT') {
-             navigate('/')
+             navigate('/register')
         }
       }, [barbershop, navigate])
 
