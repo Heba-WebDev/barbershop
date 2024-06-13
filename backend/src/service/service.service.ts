@@ -16,18 +16,18 @@ export class ServiceService {
 
   async findAll (user: User) {
     try {
-      const company = this.company.findCompanyForOwner(user.id as UUID)
+      const company = await this.company.findCompanyForOwner(user.id as UUID)
       return await this.prisma.service.findMany({
         where: {
-          company_id: (await company).id
+          company_id: company.id,
+          is_visible: true
         },
         select: {
           id: true,
           avatar: true,
           name: true,
           price: true,
-          is_active: true,
-          is_visible: true
+          is_active: true
         }
       })
     } catch (error) {
