@@ -62,9 +62,11 @@ export class ServiceService {
           company_id: company.id
         },
         select: {
+          id: true,
           avatar: true,
           name: true,
-          price: true
+          price: true,
+          is_active: true
         }
       })
       return service
