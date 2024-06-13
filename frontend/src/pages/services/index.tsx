@@ -5,8 +5,12 @@ import { ServiceHoursNav } from '@/components/globals/ServiceHoursNav'
 import { ServiceDialog } from './components/serviceDialog'
 import { userState } from '@/state/user'
 import { fetchServicsApi } from './api'
+import { useNavigate } from 'react-router-dom'
 
 export const ServicesView = () => {
+    const navigate = useNavigate()
+    const isLoggedin = userState((state) => state.is_loggedin)
+    const user = userState((state) => state.user)
     const token = userState((state) => state.token)
     const serviceList = userState((state) => state.service)
     const setService = userState((state) => state.setService)
@@ -16,6 +20,7 @@ export const ServicesView = () => {
         return res
     }
     useEffect(() => {
+        if (!isLoggedin || user?.role[0] !== 'OWNER') navigate('/')
         if (!serviceList) fetch()
     }, [])
     
