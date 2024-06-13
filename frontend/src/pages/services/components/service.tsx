@@ -23,7 +23,7 @@ export const Service = ({id, name, price, is_active}: service) => {
             if (error instanceof Error) toast.error(error.message)
         }
     }
- 
+
     const handleDelete = async () => {
         try {
             await deletedServiceApi(id, token as string);
@@ -31,7 +31,7 @@ export const Service = ({id, name, price, is_active}: service) => {
             setServices(res);
             toast.success(
                 `El servicio ${name} ha sido ${
-                    is_active ? 'desactivado' : 'activado'
+                    is_active ? 'eliminado' : 'activado'
                 }`
             );
         } catch (error) {
@@ -47,9 +47,8 @@ export const Service = ({id, name, price, is_active}: service) => {
             </div>
             <div className='flex items-center gap-2'>
                 <Switch onClick={handleSwitch} checked={is_active} className='data-[state]:checked:bg-red-600' />
-                <TrashIcon onClick={handleDelete}/>
+                <div className=' hover:cursor-pointer'><TrashIcon onClick={handleDelete}/></div>
             </div>
-            
         </div>
     )
 }
