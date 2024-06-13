@@ -26,7 +26,8 @@ export class ServiceService {
           avatar: true,
           name: true,
           price: true,
-          is_active: true
+          is_active: true,
+          is_visible: true
         }
       })
     } catch (error) {
