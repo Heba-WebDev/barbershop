@@ -1,16 +1,14 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common'
 
-import { getTimeForDate, getHoursWithInterval, getFormatedHours, getNameDay } from './utils'
+import { type $Enums } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { type QueryParamsScheduleDto, type UpdateScheduleDto } from './dto'
-import { AppointmentService } from '../appointment/appointment.service'
-import { type $Enums } from '@prisma/client'
+import { getFormatedHours, getHoursWithInterval, getNameDay, getTimeForDate } from './utils'
 
 @Injectable()
 export class ScheduleService {
   constructor (
-    private readonly prismaService: PrismaService,
-    private readonly appointmentService: AppointmentService
+    private readonly prismaService: PrismaService
   ) {}
 
   async update (id: number, userId: string, updateScheduleDto: UpdateScheduleDto) {
@@ -89,9 +87,41 @@ export class ScheduleService {
     const { id } = await this.findOneByCompanyIdAndDay(companyId, day)
     const allPossibleHours = await this.findHoursWithIntervalById(id)
 
-    const allAvailableHours = await this.appointmentService.findAllAvailableHours(date, allPossibleHours)
+    const allAvailableHours = await this.findAllAvailableHours(date, allPossibleHours)
 
     return getFormatedHours(allAvailableHours)
+  }
+
+  async create (companyId: string, day: $Enums.Day) {
+    const scheduleFound = await this.prismaService.schedule.findFirst({
+      where: { company_id: companyId, day }
+    })
+
+    if (scheduleFound) throw new ConflictException('The company already has a schedule for this day')
+
+    const schedule = await this.prismaService.schedule.create({
+      data: {
+        day,
+        company_id: companyId
+      }
+    })
+
+    return schedule
+  }
+
+  async createSchedulesCampany (companyId: string) {
+    await this.findOneCompanyById(companyId)
+
+    const companyHasSchedules = await this.prismaService.schedule.findFirst({ where: { company_id: companyId } })
+
+    if (companyHasSchedules) return null
+
+    const dayNames: $Enums.Day[] = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+
+    return await this.prismaService.$transaction(
+      // eslint-disable-next-line
+      Array(7).fill(null).map((_, index) => this.prismaService.schedule.create({ data: { company_id: companyId, day: dayNames[index]} }))
+    )
   }
 
   // todo: move to company module
@@ -105,5 +135,29 @@ export class ScheduleService {
     const company = await this.prismaService.company.findFirst({ where: { user_id: id } })
     if (!company) throw new NotFoundException(`User with ${id} dont't have a company`)
     return company
+  }
+
+  private async findAllTimesWithDate (date: Date) {
+    const allReservedTimes = await this.prismaService.appointment.findMany({
+      where: { start_date: date },
+      select: { start_time: true }
+    })
+
+    const allReservedTimesFormated = allReservedTimes.map(time => getTimeForDate(time.start_time))
+    return allReservedTimesFormated
+  }
+
+  async findAllAvailableHours (date: Date, hours: string[]) {
+    const allReservedHours = await this.findAllTimesWithDate(date)
+
+    const availableHours: string[] = []
+
+    hours.forEach(hour => {
+      if (allReservedHours.includes(hour)) return
+
+      availableHours.push(hour)
+    })
+
+    return availableHours
   }
 }

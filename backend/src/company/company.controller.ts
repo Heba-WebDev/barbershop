@@ -5,11 +5,15 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Auth, GetUser } from '../auth/decorators'
 import { User } from '../auth/interfaces/user.interface'
 import { UUID } from 'crypto'
+import { ScheduleService } from '../schedule/schedule.service'
 
 @ApiTags('Company')
 @Controller('company')
 export class CompanyController {
-  constructor (private readonly companyService: CompanyService) {}
+  constructor (
+    private readonly companyService: CompanyService,
+    private readonly scheduleService: ScheduleService
+  ) {}
 
   @ApiBearerAuth()
   @ApiOperation({
@@ -40,6 +44,10 @@ export class CompanyController {
   @Post()
   @Auth('CLIENT')
   async create (@Body() createCompanyDto: CreateCompanyDto, @GetUser() user: User) {
-    return await this.companyService.create(createCompanyDto, user)
+    const company = await this.companyService.create(createCompanyDto, user)
+
+    await this.scheduleService.createSchedulesCampany(company.id)
+
+    return company
   }
 }

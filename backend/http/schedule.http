@@ -18,3 +18,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/schedule/available-hours/d6cac3a7-a629-4805-b784-83f346655229/1970-01-02T13:00:00
 Content-Type: application/json
 ###
+
+POST http://localhost:3001/api/schedule/9860043d-7d5e-4742-b5ad-9bb8e168e406
+Content-Type: application/json
+###

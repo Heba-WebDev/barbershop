@@ -119,28 +119,4 @@ export class AppointmentService {
       handleErrorExceptions(error)
     }
   }
-
-  private async findAllTimesWithDate (date: Date) {
-    const allReservedTimes = await this.prisma.appointment.findMany({
-      where: { start_date: date },
-      select: { start_time: true }
-    })
-
-    const allReservedTimesFormated = allReservedTimes.map(time => getTimeForDate(time.start_time))
-    return allReservedTimesFormated
-  }
-
-  async findAllAvailableHours (date: Date, hours: string[]) {
-    const allReservedHours = await this.findAllTimesWithDate(date)
-
-    const availableHours: string[] = []
-
-    hours.forEach(hour => {
-      if (allReservedHours.includes(hour)) return
-
-      availableHours.push(hour)
-    })
-
-    return availableHours
-  }
 }
