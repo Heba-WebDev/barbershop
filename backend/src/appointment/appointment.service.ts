@@ -6,7 +6,6 @@ import { ServiceService } from '../service/service.service'
 import { handleErrorExceptions } from '../common/utils'
 import { CompanyService } from '../company/company.service'
 import { type User } from '../auth/interfaces'
-import { getTimeForDate } from '../schedule/utils'
 import { type FindAppointmentDto } from './dto/find-appointment.dto'
 
 @Injectable()
@@ -23,7 +22,22 @@ export class AppointmentService {
       return await this.prisma.appointment.findMany({
         where: { user_id: user.id, state },
         select: {
-          employee_id: true,
+          employee: {
+            select: {
+              company: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              },
+              user: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          },
           id: true,
           start_date: true,
           start_time: true,
