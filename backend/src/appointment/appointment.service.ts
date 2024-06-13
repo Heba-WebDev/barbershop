@@ -124,8 +124,11 @@ export class AppointmentService {
 
       await this.createServiceForAppointment(services, rest.id as UUID)
 
+      const serviceAppointment = await this.findAllServiceForAppointment(rest.id as UUID)
+
       return {
-        ...rest
+        ...rest,
+        serviceAppointment
       }
     } catch (error) {
       handleErrorExceptions(error)
@@ -133,14 +136,47 @@ export class AppointmentService {
   }
 
   async createServiceForAppointment (services: UUID[], appointmentID: UUID) {
-    const serviceFormated = services.map(service => ({
-      appointment_id: appointmentID,
-      service_id: service
-    }))
+    const serviceFormated = services.map(service => (
+      {
+        appointment_id: appointmentID,
+        service_id: service
+      }))
+
+    // const logService
+
+    // for (const serv of services) {
+    //   const { name, id } = await this.serviceService.findServiceUUID(serv)
+    //   const logService = {
+    //     ...logService,
+    //     name,
+    //     id
+
+    //   }
+    // }
 
     try {
       return await this.prisma.serviceAppointment.createMany({
         data: serviceFormated
+      })
+    } catch (error) {
+      handleErrorExceptions(error)
+    }
+  }
+
+  async findAllServiceForAppointment (appointmentID: UUID) {
+    try {
+      return await this.prisma.serviceAppointment.findMany({
+        where: {
+          appointment_id: appointmentID
+        },
+        select: {
+          service: {
+            select: {
+              name: true,
+              id: true
+            }
+          }
+        }
       })
     } catch (error) {
       handleErrorExceptions(error)
