@@ -89,7 +89,7 @@ export class AppointmentService {
       const prices = await Promise.all(servicePromise)
       total = prices.reduce((acc, price) => acc + price, 0)
 
-      const { employee, ...rest } = await this.prisma.appointment.create({
+      const { ...rest } = await this.prisma.appointment.create({
         data: {
           start_date: new Date(date),
           start_time: new Date(startDate),
@@ -99,20 +99,33 @@ export class AppointmentService {
           ...data
         },
         select: {
+          employee: {
+            select: {
+              company: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              },
+              user: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          },
           id: true,
           start_date: true,
           start_time: true,
-          state: true,
-          total: true,
-          employee: { select: { user: { select: { name: true } } } }
+          state: true
         }
       })
 
       await this.createServiceForAppointment(services, rest.id as UUID)
 
       return {
-        ...rest,
-        employee: employee.user.name
+        ...rest
       }
     } catch (error) {
       handleErrorExceptions(error)
