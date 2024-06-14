@@ -101,7 +101,7 @@ export const userState = create<Store>()(
             setCompany: (company: Company[]) => set((state: Store) => ({ ...state, company})),
             setService: (service: Services[]) => set((state) => ({ ...state, service})),
             setHours: (hours: Hours[]) => set((state) => ({ ...state, hours })),
-            logout: () => set({ is_loggedin: false, user: null, token: null, service: null, company: [] }),
+            logout: () => set({ is_loggedin: false, user: null, token: null, service: null, company: [], hours: null }),
         }),
         {
             name: 'token',

@@ -32,31 +32,31 @@ export interface IChangeHoursStr {
 
 export const daysES = [
     {
-        id: 15,
+        english: 'SUNDAY',
         day: 'DOMINGO'
     },
     {
-        id: 16,
+        english: 'MONDAY',
         day: 'LUNES'
     },
     {
-        id: 17,
+        english: 'TUESDAY',
         day: 'MARTES'
     },
     {
-        id: 18,
+        english: 'WEDNESDAY',
         day: 'MIÉRCOLES'
     },
     {
-        id: 19,
+        english: 'THURSDAY',
         day: 'JUEVES'
     },
     {
-        id: 20,
+        english: 'FRIDAY',
         day: 'VIERNES'
     },
     {
-        id: 21,
+        english: 'SATURDAY',
         day: 'SÁBADO'
     },
 ]
