@@ -43,7 +43,7 @@ export const CompanyForm = () => {
                 role: ['OWNER']
             })
             company(res)
-            navigate('/')
+            navigate('/services')
         } catch (error: unknown) {
             if(error instanceof Error) toast.error(error.message)
         }
