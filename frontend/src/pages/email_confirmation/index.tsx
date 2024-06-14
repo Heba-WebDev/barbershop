@@ -13,11 +13,11 @@ export const EmailConfirmationView = () => {
     const navigate = useNavigate()
     const params = useParams()
     const token = params.token?.split('=')[1]
-    if (user?.is_verified === true) navigate('/')
     if (!token) navigate('/')
     useEffect(() => {
         const verify = async () => {
             try {
+                if (user?.is_verified === true) navigate('/')
                 await confirmEmailApi(token as string)
                 setVerifyToken(true)
                 if(is_loggedin) {
