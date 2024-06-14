@@ -30,7 +30,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/hours',
-                element: <HoursView day={''} dateHour={''} />,
+                element: <HoursView />,
             },
             {
                 path: '/home',

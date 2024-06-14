@@ -26,7 +26,7 @@ export const LoginView = () => {
             setUser(res.user)
             setToken(res.token)
             setLoggedin(true)
-            toast.success('Iniciado sesión exitosamente')
+            toast.success('La sesión ha sido iniciada')
             navigate('/')
         } catch (error: unknown) {
             if(error instanceof Error) toast.error(error.message)
@@ -87,6 +87,9 @@ export const LoginView = () => {
                                     {formik.errors.password}
                                 </span>
                             ) : null}
+                            <div className='text-center text-sm text-light-cayn pt-3 underline'>
+                                <a href='./recover-password'><p>¿has olvidado tu contraseña?</p>  </a>
+                            </div>
                         </div>
                         <Button
                             type='submit'
@@ -97,10 +100,6 @@ export const LoginView = () => {
                         <div className=' flex gap-1 text-center mx-auto text-sm'>
                             <span>No tienes una cuenta?</span>
                             <a href='/register' className=' text-light-cayn font-bold underline'>Registrate</a>
-                        </div>
-                        <div className='text-center text-sm text-cyan-200 underline'>
-                            <p>o</p>
-                            <a href='./recover-password'><p>¿Te has olvidado tu contraseña?</p>  </a>
                         </div>
                     </Form>
                 )}
