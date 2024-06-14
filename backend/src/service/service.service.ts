@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { type CreateServiceDto } from './dto/create-service.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { type UUID } from 'crypto'
@@ -124,5 +124,26 @@ export class ServiceService {
     } catch (error) {
       handleErrorExceptions(error)
     }
+  }
+
+  async findServicesWithCompanyId (companyId: string) {
+    const company = await this.prisma.company.findUnique({ where: { id: companyId } })
+
+    if (!company) throw new NotFoundException('Company not exist')
+    if (!company.is_active) throw new UnauthorizedException('Company is Inactive')
+
+    const services = await this.prisma.service.findMany({
+      where: { company_id: companyId },
+      select: { id: true, name: true, price: true }
+    })
+
+    const employee = await this.prisma.employeeCompany.findFirst({
+      where: { company_id: companyId },
+      select: { id: true, company: { select: { name: true } } }
+    })
+
+    if (!employee) throw new NotFoundException('Employee not found')
+
+    return { services, employee }
   }
 }

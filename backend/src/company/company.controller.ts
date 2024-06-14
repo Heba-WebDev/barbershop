@@ -26,6 +26,14 @@ export class CompanyController {
   }
 
   @ApiBearerAuth()
+  @Get(':companyId')
+  async getCompanyById (
+  @Param('companyId', ParseUUIDPipe) companyId: string
+  ) {
+    return await this.companyService.findOneCompanyById(companyId)
+  }
+
+  @ApiBearerAuth()
   @ApiOperation({
     description:
     'This endpoint needs a bearear token to extract the user from the request'

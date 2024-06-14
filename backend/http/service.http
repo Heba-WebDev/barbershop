@@ -1,8 +1,13 @@
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlMmFmYzc2LTg1ZjAtNDRjYi1iZGJlLTY0NTJkYTMwZGUzZiIsImlhdCI6MTcxNjg2MjU4NywiZXhwIjoxNzE2ODY2MTg3fQ.3iHjx-iJgot7eW71UGYG8Ql1F9hN-rzXWCtT9AVL_Hc
+###
 
 GET http://localhost:3000/api/service
 Authorization: Bearer {{token}}
+###
 
+GET http://localhost:3001/api/service/c1562e0d-20d2-493a-8e5e-51a75d0d9a2b
+
+###
 POST http://localhost:3000/api/service
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -11,12 +16,15 @@ Authorization: Bearer {{token}}
   "price": 1000
 }
 
+###
 PATCH http://localhost:3000/api/service/remove-service/7649e8ad-4d57-43ae-8b20-fe57015279ba
 Authorization: Bearer {{token}}
 
+###
 PATCH http://localhost:3000/api/service/update-active-service/7649e8ad-4d57-43ae-8b20-fe57015279ba
 Authorization: Bearer {{token}}
 
+###
 PATCH  http://localhost:3000/api/service/update-detail-service
 Authorization: Bearer {{token}}
 {
