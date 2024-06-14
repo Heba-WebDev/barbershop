@@ -28,7 +28,7 @@ export const RegisterView = () => {
                 phoneNumber: values.phoneNumber
             }
             await registerApi(val)
-            toast.success('Iniciado sesión exitosamente')
+            toast.success('El registro ha sido exitoso')
             navigate('/login')
         } catch (error: unknown) {
             if(error instanceof Error) toast.error(error.message)
