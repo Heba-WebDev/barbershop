@@ -73,6 +73,9 @@ export interface Store {
     addAppointment: (appointment: Appointment) => void
     company: Company[] | [];
     hours: Hours[] | null;
+    appointment: Appointment[]
+    setAppointments: (appointments: Appointment[]) => void
+    addAppointment: (appointment: Appointment) => void
     setLoggedin: (logged: boolean) => void;
     setToken: (token: string) => void;
     setUser: (user: User) => void;
@@ -95,6 +98,9 @@ export const userState = create<Store>()(
             addAppointment: (appointment: Appointment) => set((state) => ({ ...state, appointment: [...get().appointment, { ...appointment }]})),
             company: [],
             hours: null,
+            appointment: [],
+            setAppointments: (appointments: Appointment[]) => set((state) => ({ ...state, appointment: appointments})),
+            addAppointment: (appointment: Appointment) => set((state) => ({ ...state, appointment: [...get().appointment, { ...appointment }]})),
             setLoggedin: (payload: boolean) => set((state: Store) =>({ ...state, is_loggedin: payload})),
             setUser: (payload: User) => set((state: Store) => ({ ...state, user: payload })),
             setToken: (token: string) => set((state: Store) => ({ ...state, token })),
