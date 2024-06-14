@@ -8,6 +8,7 @@ import { HoursDialog } from './ChangeHours'
 
 export const Day = ({
     id,
+    day,
     company_id,
     initial_start_date,
     initial_end_date,
@@ -16,7 +17,7 @@ export const Day = ({
     state,
     interval
 }: DayProps) => {
-    const dayName = daysES.filter((day) => day.id === id)
+    const dayName = daysES.filter((d) => day === d.english)
     const token = userState((state) => state.token)
     const setHours = userState((state) => state.setHours)
     const handleActivateDay = async() => {
