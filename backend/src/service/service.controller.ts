@@ -23,6 +23,13 @@ export class ServiceController {
     return await this.serviceService.findAll(user)
   }
 
+  // @ApiBearerAuth()
+  // @Auth('OWNER')
+  @Get(':companyId')
+  async findServicesWithCompanyId (@Param('companyId', ParseUUIDPipe) companyId: string) {
+    return await this.serviceService.findServicesWithCompanyId(companyId)
+  }
+
   @ApiBearerAuth()
   @ApiOperation({
     description:

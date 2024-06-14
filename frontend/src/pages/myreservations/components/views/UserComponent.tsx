@@ -1,49 +1,69 @@
+import { ReservationSection } from '../ReservationSection'
+import { NewReservationDialog } from '../NewReservationDialog'
+import { api } from '@/axios'
+import { useEffect } from 'react'
+import { Appointment, userState } from '@/state/user'
 
-import { ReservationSection } from "../ReservationSection"
-import {NewReservationDialog } from "../NewReservationDialog"
+const getAppointments = async (token: string): Promise<Appointment[]> => {
+    try {
+        const { data } = await api.get<Appointment[]>('/api/appointment', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
 
-const reservaciones=[
-    {
-        barber:"Arroz BarberShop",
-        avatar:"https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png",
-        servicio:"Hair Cut",
-        fecha:"09/06/2024",
-        hora:"10:30 AM - 11:45 AM"
-    },
-    {
-        barber:"SIUUU BarberShop",
-        avatar:"https://cdn-icons-png.flaticon.com/512/147/147144.png",
-        servicio:"Lavado de cabello",
-        fecha:"12/06/2024",
-        hora:"9:30 PM - 10:30 PM"
-    },
-    {
-        barber:"Messirve BarberShop",
-        avatar:"https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png?f=webp",
-        servicio:"Afinamiento de Copete",
-        fecha:"15/06/2024",
-        hora:"10:30 AM - 11:00 AM"
+        return data
+    } catch (error) {
+        throw new Error('Cannot get appointments')
     }
-]
+}
 
+const getTimeForDate = (date: Date) => {
+    const hours = date.getUTCHours().toString().padStart(2, '0')
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0')
 
+    return `${hours}:${minutes}`
+}
 
 export const UserComponent = () => {
-  return (
-    <div className="pb-20">
-        <h1 className="text-center text-2xl text-purple-300 py-4">Mis reservaciones:</h1>
-        {
-            reservaciones.map((reservacion)=>{
-                return(
-                    <div className="py-2" key={`${reservacion.fecha}-${reservacion.hora}`}>
-                        <ReservationSection {...reservacion} />
-                    </div>
-                    
-                )
-            })
+
+    const token = userState((store) => store.token)
+    const appointments = userState((store) => store.appointment)
+    const setAppointments = userState((store) => store.setAppointments)
+
+    useEffect(() => {
+        if (token) {
+            getAppointments(token)
+                .then(data => setAppointments(data))
         }
-        <NewReservationDialog />
-        
-    </div>
-  )
+    }, [])
+    
+    return (
+        <div className="pb-20">
+            <h1 className="text-center text-2xl text-purple-300 py-4">Mis reservaciones:</h1>
+            {
+                appointments?.map(({ id, employee, start_date, start_time, ServiceAppointment}) => {
+
+                    const date = start_date.toString().split('T')[0].replace(/-/g, '/')
+                    const hour = getTimeForDate(new Date(start_time))
+
+                    const serviceName = ServiceAppointment[0]?.service.name ?? 'Unknow'
+
+                    return (
+                        <div className="py-2" key={id}>
+                            <ReservationSection 
+                                employeeName={employee.user.name}
+                                barberShopName={employee.company.name}
+                                date={date}
+                                service={serviceName}
+                                hour={hour}
+                            />
+                        </div>
+                    )
+                })
+            }
+            
+            <NewReservationDialog />
+        </div>
+    )
 }
