@@ -4,7 +4,6 @@ import { api } from '@/axios'
 import { IRegisterCompany } from '../types'
 
 export const registerCompanyApi = async (data: IRegisterCompany, token: string) => {
-    console.log(JSON.stringify(data))
     try {
         const response = await api.post('/api/company', data, {
             headers: {
